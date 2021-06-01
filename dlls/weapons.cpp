@@ -652,21 +652,16 @@ void CBasePlayerWeapon::ItemPostFrame( void )
 
 	if( ( m_fInReload ) && ( m_pPlayer->m_flNextAttack <= UTIL_WeaponTimeBase() ) )
 	{
-		// complete the reload. 
-		
-		bool WholeReload = FALSE;
+		// complete the reload. 		
+		int j = 0;
 		
 		if( (LeaveInChamberGL == TRUE) && (m_iClip<1) )
 		{
-			m_iClip += 1; //kinda hacky..
-			WholeReload = TRUE;
+			j = Q_min( iMaxClip() - m_iClip-1, m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]);	
 		}
-		
-		int j = Q_min( iMaxClip() - m_iClip, m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]);	
-		
-		if( WholeReload == TRUE )
+		else
 		{
-			m_iClip -= 1;
+			j = Q_min( iMaxClip() - m_iClip, m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]);
 		}
 		
 		// Add them to the clip
