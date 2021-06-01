@@ -156,8 +156,12 @@ void CBaseEntity::Killed( entvars_t *pevAttacker, int iGib )
 CBasePlayerWeapon::DefaultReload
 =====================
 */
-BOOL CBasePlayerWeapon::DefaultReload( int iClipSize, int iAnim, float fDelay, int body )
+
+bool LeaveInChamberGL = FALSE;
+
+BOOL CBasePlayerWeapon::DefaultReload( int iClipSize, int iAnim, float fDelay, int body, bool LeaveInChamber )
 {
+	LeaveInChamberGL = LeaveInChamber;
 	if( m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] <= 0 )
 		return FALSE;
 
@@ -337,8 +341,22 @@ void CBasePlayerWeapon::ItemPostFrame( void )
 	{
 #if 0 // FIXME, need ammo on client to make this work right
 		// complete the reload. 
+		
+		bool WholeReload = FALSE;
+		
+		if( (LeaveInChamberGL == TRUE) && (m_iClip<1) )
+		{
+			m_iClip += 1; //kinda hacky..
+			WholeReload = TRUE;
+		}
+		
 		int j = min( iMaxClip() - m_iClip, m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] );
-
+	
+		if( WholeReload == TRUE )
+		{
+			m_iClip -= 1;
+		}
+		
 		// Add them to the clip
 		m_iClip += j;
 		m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] -= j;
