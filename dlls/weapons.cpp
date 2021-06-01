@@ -602,7 +602,9 @@ BOOL CanAttack( float attack_time, float curtime, BOOL isPredicted )
 	}
 }
 
-bool LeaveInChamberGL = FALSE;
+#ifdef LEAVE_AMMO_IN_CLIP
+	bool LeaveInChamberGL = FALSE;
+#endif
 
 void CBasePlayerWeapon::ItemPostFrame( void )
 {
@@ -610,17 +612,22 @@ void CBasePlayerWeapon::ItemPostFrame( void )
 
 	if( ( m_fInReload ) && ( m_pPlayer->m_flNextAttack <= UTIL_WeaponTimeBase() ) )
 	{
-		// complete the reload. 
-		int j = 0;
+		// complete the reload. 		
 		
-		if( (LeaveInChamberGL == TRUE) && (m_iClip<1) )
-		{
-			j = Q_min( iMaxClip() - m_iClip-1, m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]);	
-		}
-		else
-		{
-			j = Q_min( iMaxClip() - m_iClip, m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]);
-		}
+		#ifdef LEAVE_AMMO_IN_CLIP
+			int j = 0;
+
+			if( (LeaveInChamberGL == TRUE) && (m_iClip<1) )
+			{
+				j = Q_min( iMaxClip() - m_iClip-1, m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]);	
+			}
+			else
+			{
+				j = Q_min( iMaxClip() - m_iClip, m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]);
+			}
+		#else
+			int j = Q_min( iMaxClip() - m_iClip, m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]);
+		#endif
 		
 		// Add them to the clip
 		m_iClip += j;
@@ -974,11 +981,28 @@ BOOL CBasePlayerWeapon::DefaultDeploy( const char *szViewModel, const char *szWe
 
 BOOL CBasePlayerWeapon::DefaultReload( int iClipSize, int iAnim, float fDelay, int body, bool LeaveInChamber )
 {
-	LeaveInChamberGL = LeaveInChamber;
+	#ifdef LEAVE_AMMO_IN_CLIP
+		LeaveInChamberGL = LeaveInChamber;
+	#else
+		LeaveInChamber = FALSE;
+	#endif
 	if( m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] <= 0 )
 		return FALSE;
-
-	int j = Q_min( iClipSize - m_iClip, m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] );
+	
+	#ifdef LEAVE_AMMO_IN_CLIP
+		int j = 0;
+			
+		if( (LeaveInChamber == TRUE) && (m_iClip<1) )
+		{
+			j = Q_min( iClipSize - m_iClip-1, m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] );
+		}
+		else
+		{
+			j = Q_min( iClipSize - m_iClip, m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] );
+		}
+	#else
+		int j = Q_min( iClipSize - m_iClip, m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] );
+	#endif
 
 	if( j == 0 )
 		return FALSE;
