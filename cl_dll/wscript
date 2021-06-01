@@ -114,6 +114,12 @@ def build(bld):
 	defines = ['CLIENT_DLL']
 	if bld.env.GOLDSRC:
 		defines += ['GOLDSOURCE_SUPPORT']
+		
+	if bld.env.FIX_HANDGRENADE_THROW:
+		defines += ['FIX_HANDGRENADE_THROW']
+	
+	if bld.env.LEAVE_AMMO_IN_CLIP:
+		defines += ['LEAVE_AMMO_IN_CLIP']
 
 	libs = []
 	if bld.env.DEST_OS == 'win32':
