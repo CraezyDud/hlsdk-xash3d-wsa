@@ -45,7 +45,12 @@ def options(opt):
 
 	grp.add_option('--enable-simple-mod-hacks', action = 'store_true', dest = 'ENABLE_MOD_HACKS', default = False,
 		help = 'enable hacks for simple mods that mostly compatible with Half-Life but has little changes. Enforced for Android. [default: %default]')
-
+	
+	grp.add_option('--leave-bullet-in-chamber', action = 'store_true', dest = 'LEAVE_AMMO_IN_CLIP', default = False,
+		help = 'keep ammunition in the chamber on crossbow and handgun if ammunition is above 1. (probably multiplayer incompatible with people that don\'t have this) [default: %default]')
+		
+	grp.add_option('--fix-handgrenade-throw', action = 'store_true', dest = 'FIX_HANDGRENADE_THROW', default = False,
+		help = 'Fixes the \'if\' that is supposed to activate after a grenade throw, animation is not restored on false. (probably multiplayer incompatible with people that don\'t have this) [default: %default]')
 	opt.load('subproject')
 
 	opt.add_subproject(['cl_dll', 'dlls'])
@@ -83,6 +88,8 @@ def configure(conf):
 
 	conf.env.VOICEMGR    = conf.options.VOICEMGR
 	conf.env.GOLDSRC     = conf.options.GOLDSRC
+	conf.env.LEAVE_AMMO_IN_CLIP   = conf.options.LEAVE_AMMO_IN_CLIP
+	conf.env.FIX_HANDGRENADE_THROW   = conf.options.FIX_HANDGRENADE_THROW
 
 	# Force XP compability, all build targets should add
 	# subsystem=bld.env.MSVC_SUBSYSTEM
