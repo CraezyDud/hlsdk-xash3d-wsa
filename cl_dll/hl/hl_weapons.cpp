@@ -157,9 +157,7 @@ CBasePlayerWeapon::DefaultReload
 =====================
 */
 
-#ifdef LEAVE_AMMO_IN_CLIP
-	bool LeaveInChamberGL = FALSE;
-#endif
+bool LeaveInChamberGL = FALSE;
 
 BOOL CBasePlayerWeapon::DefaultReload( int iClipSize, int iAnim, float fDelay, int body, bool LeaveInChamber )
 {
