@@ -168,11 +168,19 @@ public:
 #define SATCHEL_MAX_CLIP		WEAPON_NOCLIP
 #define TRIPMINE_MAX_CLIP		WEAPON_NOCLIP
 #define SNARK_MAX_CLIP			WEAPON_NOCLIP
-#define EAGLE_MAX_CLIP			7
+#ifdef LEAVE_AMMO_IN_CLIP
+	#define EAGLE_MAX_CLIP			8
+#else
+	#define EAGLE_MAX_CLIP			7
+#endif
 #define M249_MAX_CLIP			50
 #define PENGUIN_MAX_CLIP		WEAPON_NOCLIP
 #define SHOCKRIFLE_MAX_CLIP		10
-#define SNIPERRIFLE_MAX_CLIP		5
+#ifdef LEAVE_AMMO_IN_CLIP
+	#define SNIPERRIFLE_MAX_CLIP		6
+#else
+	#define SNIPERRIFLE_MAX_CLIP		5
+#endif
 #define SPORELAUNCHER_MAX_CLIP		5
 
 // the default amount of ammo that comes with each gun when it spawns
@@ -200,11 +208,19 @@ public:
 #define SNARK_DEFAULT_GIVE			5
 #define HIVEHAND_DEFAULT_GIVE		8
 #define DISPLACER_DEFAULT_GIVE		40
-#define EAGLE_DEFAULT_GIVE			7
+#ifdef LEAVE_AMMO_IN_CLIP
+	#define EAGLE_DEFAULT_GIVE			8
+#else
+	#define EAGLE_DEFAULT_GIVE			7
+#endif
 #define M249_DEFAULT_GIVE			50
 #define PENGUIN_DEFAULT_GIVE			3
 #define SHOCKRIFLE_DEFAULT_GIVE			10
-#define SNIPERRIFLE_DEFAULT_GIVE		5
+#ifdef LEAVE_AMMO_IN_CLIP
+	#define SNIPERRIFLE_DEFAULT_GIVE		6
+#else
+	#define SNIPERRIFLE_DEFAULT_GIVE		5
+#endif
 #define SPORELAUNCHER_DEFAULT_GIVE		5
 
 // The amount of ammo given to a player by an ammo item.
