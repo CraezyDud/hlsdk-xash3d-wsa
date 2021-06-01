@@ -187,9 +187,17 @@ void CGlock::Reload( void )
 	int iResult;
 
 	if( m_iClip == 0 )
-		iResult = DefaultReload( GLOCK_MAX_CLIP, GLOCK_RELOAD, 1.5f );
+		#ifdef LEAVE_AMMO_IN_CLIP
+			iResult = DefaultReload( GLOCK_MAX_CLIP, GLOCK_RELOAD, 1.5f, 0, TRUE );
+		#else
+			iResult = DefaultReload( GLOCK_MAX_CLIP, GLOCK_RELOAD, 1.5f );
+		#endif
 	else
-		iResult = DefaultReload( GLOCK_MAX_CLIP, GLOCK_RELOAD_NOT_EMPTY, 1.5f );
+		#ifdef LEAVE_AMMO_IN_CLIP
+			iResult = DefaultReload( GLOCK_MAX_CLIP, GLOCK_RELOAD_NOT_EMPTY, 1.5f, 0, TRUE );
+		#else
+			iResult = DefaultReload( GLOCK_MAX_CLIP, GLOCK_RELOAD_NOT_EMPTY, 1.5f );
+		#endif
 
 	if( iResult )
 	{
