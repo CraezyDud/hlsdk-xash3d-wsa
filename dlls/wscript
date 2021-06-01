@@ -146,6 +146,12 @@ def build(bld):
 		defines += ['NO_VOICEGAMEMGR']
 
 	libs = []
+	
+	if bld.env.FIX_HANDGRENADE_THROW:
+		defines += ['FIX_HANDGRENADE_THROW']
+	
+	if bld.env.LEAVE_AMMO_IN_CLIP:
+		defines += ['LEAVE_AMMO_IN_CLIP']
 
 	if bld.env.DEST_OS not in ['android', 'dos']:
 		install_path = os.path.join(bld.env.GAMEDIR, bld.env.SERVER_DIR)
