@@ -600,6 +600,8 @@ BOOL CanAttack( float attack_time, float curtime, BOOL isPredicted )
 	}
 }
 
+bool LeaveInChamberGL = FALSE;
+
 void CBasePlayerWeapon::ItemPostFrame( void )
 {
 	WeaponTick();
@@ -607,8 +609,22 @@ void CBasePlayerWeapon::ItemPostFrame( void )
 	if( ( m_fInReload ) && ( m_pPlayer->m_flNextAttack <= UTIL_WeaponTimeBase() ) )
 	{
 		// complete the reload. 
+			
+		bool WholeReload = FALSE;
+		
+		if( (LeaveInChamberGL == TRUE) && (m_iClip<1) )
+		{
+			m_iClip += 1; //kinda hacky..
+			WholeReload = TRUE;
+		}
+		
 		int j = Q_min( iMaxClip() - m_iClip, m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]);	
 
+		if( WholeReload == TRUE )
+		{
+			m_iClip -= 1;
+		}
+		
 		// Add them to the clip
 		m_iClip += j;
 		m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] -= j;
@@ -959,8 +975,9 @@ BOOL CBasePlayerWeapon::DefaultDeploy( const char *szViewModel, const char *szWe
 	return TRUE;
 }
 
-BOOL CBasePlayerWeapon::DefaultReload( int iClipSize, int iAnim, float fDelay, int body )
+BOOL CBasePlayerWeapon::DefaultReload( int iClipSize, int iAnim, float fDelay, int body, bool LeaveInChamber )
 {
+	LeaveInChamberGL = LeaveInChamber;
 	if( m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] <= 0 )
 		return FALSE;
 
