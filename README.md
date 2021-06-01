@@ -1,6 +1,6 @@
 # Half-Life SDK for Xash3D [![Build Status](https://travis-ci.org/FWGS/hlsdk-xash3d.svg)](https://travis-ci.org/FWGS/hlsdk-xash3d) [![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/FWGS/hlsdk-xash3d?svg=true)](https://ci.appveyor.com/project/a1batross/hlsdk-xash3d)
 
-Half-Life SDK for Xash3D & GoldSource with some fixes.
+Half-Life SDK for Xash3D & GoldSource with some more fixes and additions.
 
 ## How to build
 
