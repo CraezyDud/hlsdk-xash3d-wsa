@@ -207,15 +207,15 @@ void CEagle::Reload( void )
 	
 	if( m_iClip == 0 )
 		#ifdef LEAVE_AMMO_IN_CLIP
-			iResult = DefaultReload( EAGLE_MAX_CLIP, GLOCK_RELOAD, 1.5f, 0, TRUE );
+			iResult = DefaultReload( EAGLE_MAX_CLIP, DEAGLE_RELOAD, 1.5f, 0, TRUE );
 		#else
-			iResult = DefaultReload( EAGLE_MAX_CLIP, GLOCK_RELOAD, 1.5f );
+			iResult = DefaultReload( EAGLE_MAX_CLIP, DEAGLE_RELOAD, 1.5f );
 		#endif
 	else
 		#ifdef LEAVE_AMMO_IN_CLIP
-			iResult = DefaultReload( EAGLE_MAX_CLIP, GLOCK_RELOAD_NOT_EMPTY, 1.5f, 0, TRUE );
+			iResult = DefaultReload( EAGLE_MAX_CLIP, DEAGLE_RELOAD_NOT_EMPTY, 1.5f, 0, TRUE );
 		#else
-			iResult = DefaultReload( EAGLE_MAX_CLIP, GLOCK_RELOAD_NOT_EMPTY, 1.5f );
+			iResult = DefaultReload( EAGLE_MAX_CLIP, DEAGLE_RELOAD_NOT_EMPTY, 1.5f );
 		#endif
 
 	if (iResult)
