@@ -203,14 +203,22 @@ void CSniperrifle::Reload( void )
 
 	if (m_iClip == 0)
 	{
-		iResult = DefaultReload( 5, SNIPER_RELOAD1, 80.0 / 34 );
+		#ifdef LEAVE_AMMO_IN_CLIP
+			iResult = DefaultReload( 5, SNIPER_RELOAD1, 80.0 / 34, 0, TRUE );
+		#else
+			iResult = DefaultReload( 5, SNIPER_RELOAD1, 80.0 / 34 );
+		#endif
 		m_fInSpecialReload = 1;
 		m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 2.25;
 		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 2.25;
 	}
 	else
 	{
-		iResult = DefaultReload( SNIPERRIFLE_MAX_CLIP, SNIPER_RELOAD3, 2.25 );
+		#ifdef LEAVE_AMMO_IN_CLIP
+			iResult = DefaultReload( SNIPERRIFLE_MAX_CLIP, SNIPER_RELOAD3, 2.25, 0, TRUE );
+		#else
+			iResult = DefaultReload( SNIPERRIFLE_MAX_CLIP, SNIPER_RELOAD3, 2.25 );
+		#endif
 	}
 }
 void CSniperrifle::WeaponIdle( void )
