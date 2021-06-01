@@ -600,9 +600,7 @@ BOOL CanAttack( float attack_time, float curtime, BOOL isPredicted )
 	}
 }
 
-#ifdef LEAVE_AMMO_IN_CLIP
-	bool LeaveInChamberGL = FALSE;
-#endif
+bool LeaveInChamberGL = FALSE;
 
 void CBasePlayerWeapon::ItemPostFrame( void )
 {
