@@ -55,6 +55,20 @@ To use waf, you need to install python (2.7 minimum)
 Just typical `ndk-build`.
 TODO: describe what it is.
 
+### Building with my additions
+
+~~To enable building the goldsource compatible client library add GOLDSOURCE_SUPPORT flag when calling cmake:~~
+
+~~    ~~cmake .. -LEAVE-BULLET-IN-CHAMBER=ON -FIX-HANDGRENADE-THROW=ON~~
+
+^ not yet
+
+or when using waf:
+
+     ./waf configure -T release --leave-bullet-in-chamber --fix-handgrenade-throw
+
+\[to see more on waf do `./waf --help`\]
+
 ### Building GoldSource-compatible libraries
 
 To enable building the goldsource compatible client library add GOLDSOURCE_SUPPORT flag when calling cmake:
