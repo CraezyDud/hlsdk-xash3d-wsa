@@ -147,15 +147,35 @@ CBasePlayerWeapon::DefaultReload
 =====================
 */
 
-bool LeaveInChamberGL = FALSE;
+#ifdef LEAVE_AMMO_IN_CLIP
+	bool LeaveInChamberGL = FALSE;
+#endif
 
 BOOL CBasePlayerWeapon::DefaultReload( int iClipSize, int iAnim, float fDelay, int body, bool LeaveInChamber )
 {
-	LeaveInChamberGL = LeaveInChamber;
+	#ifdef LEAVE_AMMO_IN_CLIP
+		LeaveInChamberGL = LeaveInChamber;
+	#else
+		LeaveInChamber = FALSE;
+	#endif
+	
 	if( m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] <= 0 )
 		return FALSE;
-
-	int j = Q_min( iClipSize - m_iClip, m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] );
+	
+	#ifdef LEAVE_AMMO_IN_CLIP
+		int j = 0;
+			
+		if( (LeaveInChamber == TRUE) && (m_iClip<1) )
+		{
+			j = Q_min( iClipSize - m_iClip-1, m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] );
+		}
+		else
+		{
+			j = Q_min( iClipSize - m_iClip, m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] );
+		}
+	#else
+		int j = Q_min( iClipSize - m_iClip, m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] );
+	#endif
 
 	if( j == 0 )
 		return FALSE;
@@ -168,41 +188,6 @@ BOOL CBasePlayerWeapon::DefaultReload( int iClipSize, int iAnim, float fDelay, i
 	m_fInReload = TRUE;
 
 	m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 3.0f;
-	return TRUE;
-}
-
-/*
-=====================
-CBasePlayerWeapon::CanDeploy
-=====================
-*/
-BOOL CBasePlayerWeapon::CanDeploy( void ) 
-{
-	BOOL bHasAmmo = 0;
-
-	if( !pszAmmo1() )
-	{
-		// this weapon doesn't use ammo, can always deploy.
-		return TRUE;
-	}
-
-	if( pszAmmo1() )
-	{
-		bHasAmmo |= ( m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] != 0 );
-	}
-	if( pszAmmo2() )
-	{
-		bHasAmmo |= ( m_pPlayer->m_rgAmmo[m_iSecondaryAmmoType] != 0 );
-	}
-	if( m_iClip > 0 )
-	{
-		bHasAmmo |= 1;
-	}
-	if( !bHasAmmo )
-	{
-		return FALSE;
-	}
-
 	return TRUE;
 }
 
@@ -332,17 +317,12 @@ void CBasePlayerWeapon::ItemPostFrame( void )
 #if 1
 		// complete the reload. 
 		
-		int j = 0;
+		ItemInfo itemInfo;
+		memset( &itemInfo, 0, sizeof( itemInfo ) );
+		GetItemInfo( &itemInfo );
 		
-		if( (LeaveInChamberGL == TRUE) && (m_iClip<1) )
-		{
-			j = Q_min( iMaxClip() - m_iClip-1, m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]);	
-		}
-		else
-		{
-			j = Q_min( iMaxClip() - m_iClip, m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]);
-		}
-		
+		int j = Q_min( itemInfo.iMaxClip - m_iClip, m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] );
+
 		// Add them to the clip
 		m_iClip += j;
 		m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] -= j;
