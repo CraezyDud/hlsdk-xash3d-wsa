@@ -490,7 +490,11 @@ void CCrossbow::Reload( void )
 		SecondaryAttack();
 	}
 
-	if( DefaultReload( CROSSBOW_MAX_CLIP, CROSSBOW_RELOAD, 4.5f ) )
+	#ifdef LEAVE_AMMO_IN_CLIP
+		if( DefaultReload( CROSSBOW_MAX_CLIP, CROSSBOW_RELOAD, 4.5f , 0, TRUE) )
+	#else
+		if( DefaultReload( CROSSBOW_MAX_CLIP, CROSSBOW_RELOAD, 4.5f ) )
+	#endif
 	{
 		EMIT_SOUND_DYN( ENT( m_pPlayer->pev ), CHAN_ITEM, "weapons/xbow_reload1.wav", RANDOM_FLOAT( 0.95f, 1.0f ), ATTN_NORM, 0, 93 + RANDOM_LONG( 0, 0xF ) );
 	}
