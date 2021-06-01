@@ -121,12 +121,20 @@ public:
 #define WEAPON_NOCLIP			-1
 
 //#define CROWBAR_MAX_CLIP		WEAPON_NOCLIP
-#define GLOCK_MAX_CLIP			17
+#ifdef LEAVE_AMMO_IN_CLIP
+	#define GLOCK_MAX_CLIP			18
+#else
+	#define GLOCK_MAX_CLIP			17
+#endif
 #define PYTHON_MAX_CLIP			6
 #define MP5_MAX_CLIP			50
 #define MP5_DEFAULT_AMMO		25
 #define SHOTGUN_MAX_CLIP		8
-#define CROSSBOW_MAX_CLIP		5
+#ifdef LEAVE_AMMO_IN_CLIP
+	#define CROSSBOW_MAX_CLIP		6
+#else
+	#define CROSSBOW_MAX_CLIP		5
+#endif
 #define RPG_MAX_CLIP			1
 #define GAUSS_MAX_CLIP			WEAPON_NOCLIP
 #define EGON_MAX_CLIP			WEAPON_NOCLIP
@@ -137,13 +145,21 @@ public:
 #define SNARK_MAX_CLIP			WEAPON_NOCLIP
 
 // the default amount of ammo that comes with each gun when it spawns
-#define GLOCK_DEFAULT_GIVE			17
+#ifdef LEAVE_AMMO_IN_CLIP
+	#define GLOCK_DEFAULT_GIVE			18
+#else
+	#define GLOCK_DEFAULT_GIVE			17
+#endif
 #define PYTHON_DEFAULT_GIVE			6
 #define MP5_DEFAULT_GIVE			25
 #define MP5_DEFAULT_AMMO			25
 #define MP5_M203_DEFAULT_GIVE		0
 #define SHOTGUN_DEFAULT_GIVE		12
-#define CROSSBOW_DEFAULT_GIVE		5
+#ifdef LEAVE_AMMO_IN_CLIP
+	#define CROSSBOW_DEFAULT_GIVE		6
+#else
+	#define CROSSBOW_DEFAULT_GIVE		5
+#endif
 #define RPG_DEFAULT_GIVE			1
 #define GAUSS_DEFAULT_GIVE			20
 #define EGON_DEFAULT_GIVE			20
