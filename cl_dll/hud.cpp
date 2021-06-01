@@ -37,6 +37,9 @@ extern cvar_t *sensitivity;
 cvar_t *cl_lw = NULL;
 cvar_t *cl_viewbob = NULL;
 
+cvar_t *cl_rollangle;
+cvar_t *cl_rollspeed;
+
 void ShutdownInput( void );
 
 //DECLARE_MESSAGE( m_Logo, Logo )
@@ -198,6 +201,9 @@ void CHud::Init( void )
 	cl_lw = gEngfuncs.pfnGetCvarPointer( "cl_lw" );
 	cl_viewbob = CVAR_CREATE( "cl_viewbob", "0", FCVAR_ARCHIVE );
 
+cvar_t *cl_rollangle;
+cvar_t *cl_rollspeed;
+
 	m_pSpriteList = NULL;
 
 	// Clear any old HUD list
@@ -236,6 +242,9 @@ void CHud::Init( void )
 	m_Menu.Init();
 	
 	MsgFunc_ResetHUD( 0, 0, NULL );
+	
+	cl_rollangle = gEngfuncs.pfnRegisterVariable("cl_rollangle", "0.65", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
+	cl_rollspeed = gEngfuncs.pfnRegisterVariable("cl_rollspeed", "300", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
 }
 
 // CHud destructor
