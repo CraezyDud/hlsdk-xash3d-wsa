@@ -72,7 +72,11 @@ int CSniperrifle::GetItemInfo(ItemInfo *p)
 	p->iMaxAmmo1 = _762_MAX_CARRY;
 	p->pszAmmo2 = NULL;
 	p->iMaxAmmo2 = -1;
-	p->iMaxClip = 5;
+	#ifdef LEAVE_AMMO_IN_CLIP
+		p->iMaxClip = 6;
+	#else
+		p->iMaxClip = 5;
+	#endif
 	p->iSlot = 5;
 	p->iPosition = 2;
 	p->iFlags = 0;
