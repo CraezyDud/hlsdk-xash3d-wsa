@@ -2,7 +2,7 @@
 
 Half-Life SDK for Xash3D & GoldSource with some more fixes and additions.
 
-[!!My changes are only on the master, bshift and opfor branch!!]
+[!!My changes are _only_ on the **master**, **bshift** and **opfor** branch!!]
 
 ## How to build
 
