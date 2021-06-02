@@ -201,9 +201,6 @@ void CHud::Init( void )
 	cl_lw = gEngfuncs.pfnGetCvarPointer( "cl_lw" );
 	cl_viewbob = CVAR_CREATE( "cl_viewbob", "0", FCVAR_ARCHIVE );
 
-cvar_t *cl_rollangle;
-cvar_t *cl_rollspeed;
-
 	m_pSpriteList = NULL;
 
 	// Clear any old HUD list
