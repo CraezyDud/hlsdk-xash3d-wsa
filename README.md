@@ -2,6 +2,8 @@
 
 Half-Life SDK for Xash3D & GoldSource with some more fixes and additions.
 
+[!!My changes are only on the master, bshift and opfor branch!!]
+
 ## How to build
 
 ### CMake as most universal way
