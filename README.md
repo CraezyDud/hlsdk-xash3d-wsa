@@ -4,6 +4,10 @@ Half-Life SDK for Xash3D & GoldSource with some more fixes and additions.
 
 [!!My changes are _only_ on the **master**, **bshift** and **opfor** branch!!]
 
+my changes fix the handgrenade throw and add that the bullet is left in the chamber when your ammo is above 0
+this is only for the glock, crossbow, desert eagle and the sniper rifle
+I don't know much about weapons, so i may have chosen an incorrect weapon, tell me if i am wrong about a weapon
+
 ## How to build
 
 ### CMake as most universal way
