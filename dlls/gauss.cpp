@@ -46,16 +46,20 @@ LINK_ENTITY_TO_CLASS( weapon_gauss, CGauss )
 
 float CGauss::GetFullChargeTime( void )
 {
-#ifdef CLIENT_DLL
-	if( bIsMultiplayer() )
-#else
-	if( g_pGameRules->IsMultiplayer() )
-#endif
-	{
-		return 1.5f;
-	}
+	#ifndef MLG_MODE
+		#ifdef CLIENT_DLL
+			if( bIsMultiplayer() )
+		#else
+			if( g_pGameRules->IsMultiplayer() )
+		#endif
+			{
+				return 1.5f;
+			}
 
-	return 4.0f;
+			return 4.0f;
+	#else
+		return 0.001f;
+	#endif
 }
 
 #ifdef CLIENT_DLL
@@ -148,64 +152,83 @@ void CGauss::Holster( int skiplocal /* = 0 */ )
 
 void CGauss::PrimaryAttack()
 {
-	// don't fire underwater
-	if( m_pPlayer->pev->waterlevel == 3 )
-	{
-		PlayEmptySound();
-		m_flNextSecondaryAttack = m_flNextPrimaryAttack = GetNextAttackDelay( 0.15f );
-		return;
-	}
+	#ifndef MLG_MODE
+		// don't fire underwater
+		if( m_pPlayer->pev->waterlevel == 3 )
+		{
+			PlayEmptySound();
+			m_flNextSecondaryAttack = m_flNextPrimaryAttack = GetNextAttackDelay( 0.15f );
+			return;
+		}
 
-	if( m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] < 2 )
-	{
-		PlayEmptySound();
-		m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.5f;
-		return;
-	}
+		if( m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] < 2 )
+		{
+			PlayEmptySound();
+			m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.5f;
+			return;
+		}
+	#endif
 
 	m_pPlayer->m_iWeaponVolume = GAUSS_PRIMARY_FIRE_VOLUME;
 	m_fPrimaryFire = TRUE;
 
-	m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] -= 2;
+	#ifndef MLG_MODE
+		m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] -= 2;
+	#else
+		m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] += 2;
+	#endif
 
 	StartFire();
 	m_fInAttack = 0;
 	m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 1.0f;
-	m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.2f;
+	#ifndef MLG_MODE
+		m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.2f;
+	#endif
 }
 
 void CGauss::SecondaryAttack()
 {
+	#ifndef MLG_MODE
 	// don't fire underwater
-	if( m_pPlayer->pev->waterlevel == 3 )
-	{
-		if( m_fInAttack != 0 )
+		if( m_pPlayer->pev->waterlevel == 3 )
 		{
-			EMIT_SOUND_DYN( ENT( m_pPlayer->pev ), CHAN_WEAPON, "weapons/electro4.wav", 1.0, ATTN_NORM, 0, 80 + RANDOM_LONG( 0, 0x3f ) );
-			SendWeaponAnim( GAUSS_IDLE );
-			m_fInAttack = 0;
-		}
-		else
-		{
-			PlayEmptySound();
-		}
+			if( m_fInAttack != 0 )
+			{
+				EMIT_SOUND_DYN( ENT( m_pPlayer->pev ), CHAN_WEAPON, "weapons/electro4.wav", 1.0, ATTN_NORM, 0, 80 + RANDOM_LONG( 0, 0x3f ) );
+				SendWeaponAnim( GAUSS_IDLE );
+				m_fInAttack = 0;
+			}
+			else
+			{
+				PlayEmptySound();
+			}
 
-		m_flNextSecondaryAttack = m_flNextPrimaryAttack = GetNextAttackDelay( 0.5f );
-		return;
-	}
+			m_flNextSecondaryAttack = m_flNextPrimaryAttack = GetNextAttackDelay( 0.5f );
+			return;
+		}
+	#else
+		m_pPlayer->m_flStartCharge-10;
+		m_fInAttack = 0;
+	#endif
 
 	if( m_fInAttack == 0 )
 	{
-		if( m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] <= 0 )
-		{
-			EMIT_SOUND( ENT( m_pPlayer->pev ), CHAN_WEAPON, "weapons/357_cock1.wav", 0.8, ATTN_NORM );
-			m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.5f;
-			return;
-		}
+		#ifndef MLG_MODE
+			if( m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] <= 0 )
+			{
+				EMIT_SOUND( ENT( m_pPlayer->pev ), CHAN_WEAPON, "weapons/357_cock1.wav", 0.8, ATTN_NORM );
+				m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.5f;
+				return;
+			}
+		#endif
 
 		m_fPrimaryFire = FALSE;
 
-		m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]--;// take one ammo just to start the spin
+		#ifndef MLG_MODE
+			m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]--;// take one ammo just to start the spin
+		#else
+			m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]++;// give one ammo just to start the spin
+		#endif
 		m_pPlayer->m_flNextAmmoBurn = UTIL_WeaponTimeBase();
 
 		// spin up
@@ -214,22 +237,40 @@ void CGauss::SecondaryAttack()
 		SendWeaponAnim( GAUSS_SPINUP );
 		m_fInAttack = 1;
 		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.5f;
-		m_pPlayer->m_flStartCharge = gpGlobals->time;
+		#ifdef MLG_MODE
+			m_pPlayer->m_flStartCharge = gpGlobals->time-10;
+		#else
+			m_pPlayer->m_flStartCharge = gpGlobals->time;
+		#endif
+		
 		m_pPlayer->m_flAmmoStartCharge = UTIL_WeaponTimeBase() + GetFullChargeTime();
 
 		PLAYBACK_EVENT_FULL( FEV_NOTHOST, m_pPlayer->edict(), m_usGaussSpin, 0.0f, g_vecZero, g_vecZero, 0.0f, 0.0f, 110, 0, 0, 0 );
 
 		m_iSoundState = SND_CHANGE_PITCH;
 	}
-	else if( m_fInAttack == 1 )
+	#ifndef MLG_MODE
+		else if( m_fInAttack == 1 )
+	#else
+		if( true )
+	#endif
+	
 	{
-		if( m_flTimeWeaponIdle < UTIL_WeaponTimeBase() )
+		#ifndef MLG_MODE
+			if( m_flTimeWeaponIdle < UTIL_WeaponTimeBase() )
+		#else
+			if( true )
+		#endif
 		{
 			SendWeaponAnim( GAUSS_SPIN );
 			m_fInAttack = 2;
 		}
 	}
-	else
+	#ifndef MLG_MODE
+		else
+	#else
+		if( true )
+	#endif
 	{
 		// Moved to before the ammo burn.
 		// Because we drained 1 when m_InAttack == 0, then 1 again now before checking if we're out of ammo,
@@ -237,6 +278,7 @@ void CGauss::SecondaryAttack()
 		// This will need to be fixed further down the line by preventing negative ammo unless explicitly required (infinite ammo?),
 		// But this check will prevent the problem for now. - Solokiller
 		// TODO: investigate further.
+		#ifndef MLG_MODE
 		if( m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] <= 0 )
                 {
                         // out of ammo! force the gun to fire
@@ -246,9 +288,14 @@ void CGauss::SecondaryAttack()
                         m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 1;
                         return;
                 }
+    #endif
 
 		// during the charging process, eat one bit of ammo every once in a while
-		if( UTIL_WeaponTimeBase() >= m_pPlayer->m_flNextAmmoBurn && m_pPlayer->m_flNextAmmoBurn != 1000 )
+		#ifndef MLG_MODE
+			if( UTIL_WeaponTimeBase() >= m_pPlayer->m_flNextAmmoBurn && m_pPlayer->m_flNextAmmoBurn != 1000 )
+		#else
+			if( true )
+		#endif
 		{
 #ifdef CLIENT_DLL
 			if( bIsMultiplayer() )
@@ -256,12 +303,20 @@ void CGauss::SecondaryAttack()
 			if( g_pGameRules->IsMultiplayer() )
 #endif
 			{
-				m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]--;
+				#ifndef MLG_MODE
+					m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]--;
+				#else
+					m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]++;
+				#endif
 				m_pPlayer->m_flNextAmmoBurn = UTIL_WeaponTimeBase() + 0.1f;
 			}
 			else
 			{
-				m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]--;
+				#ifndef MLG_MODE
+					m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]--;
+				#else
+					m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]++;
+				#endif
 				m_pPlayer->m_flNextAmmoBurn = UTIL_WeaponTimeBase() + 0.3f;
 			}
 		}
@@ -283,8 +338,10 @@ void CGauss::SecondaryAttack()
 		if( m_iSoundState == 0 )
 			ALERT( at_console, "sound state %d\n", m_iSoundState );
 
-#ifdef GAUSS_OVERCHARGE_FIX
-		if (!overcharge)
+#ifndef MLG_MODE
+	#ifdef GAUSS_OVERCHARGE_FIX
+			if (!overcharge)
+	#endif
 #endif
 			PLAYBACK_EVENT_FULL( FEV_NOTHOST, m_pPlayer->edict(), m_usGaussSpin, 0.0f, g_vecZero, g_vecZero, 0.0f, 0.0f, pitch, 0, ( m_iSoundState == SND_CHANGE_PITCH ) ? 1 : 0, 0 );
 
@@ -293,27 +350,31 @@ void CGauss::SecondaryAttack()
 		m_pPlayer->m_iWeaponVolume = GAUSS_PRIMARY_CHARGE_VOLUME;
 
 		// m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.1f;
-		if( overcharge )
-		{
-			// Player charged up too long. Zap him.
-#ifdef GAUSS_OVERCHARGE_FIX
-			PLAYBACK_EVENT_FULL( FEV_NOTHOST, m_pPlayer->edict(), m_usGaussSpin, 0.0, g_vecZero, g_vecZero, 0.0, 0.0, pitch, 0, 0, 1 );
-#endif
-			EMIT_SOUND_DYN( ENT( m_pPlayer->pev ), CHAN_WEAPON, "weapons/electro4.wav", 1.0f, ATTN_NORM, 0, 80 + RANDOM_LONG( 0, 0x3f ) );
-			EMIT_SOUND_DYN( ENT( m_pPlayer->pev ), CHAN_ITEM, "weapons/electro6.wav", 1.0f, ATTN_NORM, 0, 75 + RANDOM_LONG( 0, 0x3f ) );
+		#ifdef MLG_MODE
+			StartFire();
+		#else
+			if( overcharge )
+			{
+				// Player charged up too long. Zap him.
+	#ifdef GAUSS_OVERCHARGE_FIX
+				PLAYBACK_EVENT_FULL( FEV_NOTHOST, m_pPlayer->edict(), m_usGaussSpin, 0.0, g_vecZero, g_vecZero, 0.0, 0.0, pitch, 0, 0, 1 );
+	#endif
+				EMIT_SOUND_DYN( ENT( m_pPlayer->pev ), CHAN_WEAPON, "weapons/electro4.wav", 1.0f, ATTN_NORM, 0, 80 + RANDOM_LONG( 0, 0x3f ) );
+				EMIT_SOUND_DYN( ENT( m_pPlayer->pev ), CHAN_ITEM, "weapons/electro6.wav", 1.0f, ATTN_NORM, 0, 75 + RANDOM_LONG( 0, 0x3f ) );
 
-			m_fInAttack = 0;
-			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 1.0f;
-			m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 1.0f;
-#ifndef CLIENT_DLL
-			m_pPlayer->TakeDamage( VARS( eoNullEntity ), VARS( eoNullEntity ), 50, DMG_SHOCK );
-			UTIL_ScreenFade( m_pPlayer, Vector( 255, 128, 0 ), 2, 0.5f, 128, FFADE_IN );
-#endif
-			SendWeaponAnim( GAUSS_IDLE );
+				m_fInAttack = 0;
+				m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 1.0f;
+				m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 1.0f;
+	#ifndef CLIENT_DLL
+				m_pPlayer->TakeDamage( VARS( eoNullEntity ), VARS( eoNullEntity ), 50, DMG_SHOCK );
+				UTIL_ScreenFade( m_pPlayer, Vector( 255, 128, 0 ), 2, 0.5f, 128, FFADE_IN );
+	#endif
+				SendWeaponAnim( GAUSS_IDLE );
 
-			// Player may have been killed and this weapon dropped, don't execute any more code after this!
-			return;
-		}
+				// Player may have been killed and this weapon dropped, don't execute any more code after this!
+				return;
+			}
+		#endif
 	}
 }
 
@@ -361,11 +422,13 @@ void CGauss::StartFire( void )
 			m_pPlayer->pev->velocity = m_pPlayer->pev->velocity - gpGlobals->v_forward * flDamage * 5.0f;
 		}
 
-		if( !g_pGameRules->IsMultiplayer() )
-		{
-			// in deathmatch, gauss can pop you up into the air. Not in single play.
-			m_pPlayer->pev->velocity.z = flZVel;
-		}
+		#ifndef MLG_MODE
+			if( !g_pGameRules->IsMultiplayer() )
+			{
+				// in deathmatch, gauss can pop you up into the air. Not in single play.
+				m_pPlayer->pev->velocity.z = flZVel;
+			}
+		#endif
 #endif
 		// player "shoot" animation
 		m_pPlayer->SetAnimation( PLAYER_ATTACK1 );
@@ -574,10 +637,10 @@ void CGauss::WeaponIdle( void )
 		}
 		m_pPlayer->m_flPlayAftershock = 0.0f;
 	}
-
-	if( m_flTimeWeaponIdle > UTIL_WeaponTimeBase() )
-		return;
-
+	#ifndef MLG_MODE
+		if( m_flTimeWeaponIdle > UTIL_WeaponTimeBase() )
+			return;
+	#endif
 	if( m_fInAttack != 0 )
 	{
 		StartFire();
@@ -585,8 +648,10 @@ void CGauss::WeaponIdle( void )
 		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 2.0f;
 
 		// Need to set m_flNextPrimaryAttack so the weapon gets a chance to complete its secondary fire animation. - Solokiller
+		#ifndef MLG_MODE
 		if( m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] <= 0 )
 			m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.5f;
+		#endif
 	}
 	else
 	{
@@ -608,6 +673,10 @@ void CGauss::WeaponIdle( void )
 			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 3.0f;
 		}
 #ifndef CLIENT_DLL
+		#ifdef MLG_MODE
+			if( m_flTimeWeaponIdle > UTIL_WeaponTimeBase() )
+				return;
+		#endif
 		SendWeaponAnim( iAnim );
 #endif
 	}
