@@ -180,7 +180,7 @@ int CHudMenu::MsgFunc_ShowMenu( const char *pszName, int iSize, void *pbuf )
 
 		m_fMenuDisplayed = 1;
 		m_iFlags |= HUD_ACTIVE;
-	}
+		
 	#ifndef MLG_MODE
 		}
 		else
