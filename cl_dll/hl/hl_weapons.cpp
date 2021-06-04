@@ -196,30 +196,32 @@ CBasePlayerWeapon::CanDeploy
 */
 BOOL CBasePlayerWeapon::CanDeploy( void ) 
 {
-	BOOL bHasAmmo = 0;
+	#ifndef MLG_MODE
+		BOOL bHasAmmo = 0;
 
-	if( !pszAmmo1() )
-	{
-		// this weapon doesn't use ammo, can always deploy.
-		return TRUE;
-	}
+		if( !pszAmmo1() )
+		{
+			// this weapon doesn't use ammo, can always deploy.
+			return TRUE;
+		}
 
-	if( pszAmmo1() )
-	{
-		bHasAmmo |= ( m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] != 0 );
-	}
-	if( pszAmmo2() )
-	{
-		bHasAmmo |= ( m_pPlayer->m_rgAmmo[m_iSecondaryAmmoType] != 0 );
-	}
-	if( m_iClip > 0 )
-	{
-		bHasAmmo |= 1;
-	}
-	if( !bHasAmmo )
-	{
-		return FALSE;
-	}
+		if( pszAmmo1() )
+		{
+			bHasAmmo |= ( m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] != 0 );
+		}
+		if( pszAmmo2() )
+		{
+			bHasAmmo |= ( m_pPlayer->m_rgAmmo[m_iSecondaryAmmoType] != 0 );
+		}
+		if( m_iClip > 0 )
+		{
+			bHasAmmo |= 1;
+		}
+		if( !bHasAmmo )
+		{
+			return FALSE;
+		}
+	#endif
 
 	return TRUE;
 }
