@@ -213,7 +213,9 @@ int CCrowbar::Swing( int fFirst )
 		if( fFirst )
 		{
 			// miss
-			m_flNextPrimaryAttack = GetNextAttackDelay( 0.5 );
+			#ifndef MLG_MODE
+				m_flNextPrimaryAttack = GetNextAttackDelay( 0.5 );
+			#endif
 #ifdef CROWBAR_IDLE_ANIM
 			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + UTIL_SharedRandomFloat( m_pPlayer->random_seed, 10, 15 );
 #endif
@@ -254,11 +256,11 @@ int CCrowbar::Swing( int fFirst )
 			// If building with the clientside weapon prediction system,
 			// UTIL_WeaponTimeBase() is always 0 and m_flNextPrimaryAttack is >= -1.0f, thus making
 			// m_flNextPrimaryAttack + 1 < UTIL_WeaponTimeBase() always evaluate to false.
-#ifdef CLIENT_WEAPONS
-			if( ( m_flNextPrimaryAttack + 1.0f == UTIL_WeaponTimeBase() ) || g_pGameRules->IsMultiplayer() )
-#else
-			if( ( m_flNextPrimaryAttack + 1.0f < UTIL_WeaponTimeBase() ) || g_pGameRules->IsMultiplayer() )
-#endif
+	#ifdef CLIENT_WEAPONS
+				if( ( m_flNextPrimaryAttack + 1.0f == UTIL_WeaponTimeBase() ) || g_pGameRules->IsMultiplayer() )
+	#else
+				if( ( m_flNextPrimaryAttack + 1.0f < UTIL_WeaponTimeBase() ) || g_pGameRules->IsMultiplayer() )
+	#endif
 			{
 				// first swing does full damage
 				pEntity->TraceAttack( m_pPlayer->pev, gSkillData.plrDmgCrowbar, gpGlobals->v_forward, &tr, DMG_CLUB ); 
@@ -290,8 +292,10 @@ int CCrowbar::Swing( int fFirst )
 
 				if( !pEntity->IsAlive() )
 				{
-#ifdef CROWBAR_FIX_RAPID_CROWBAR
-					m_flNextPrimaryAttack = GetNextAttackDelay(0.25);
+#ifndef MLG_MODE
+	#ifdef CROWBAR_FIX_RAPID_CROWBAR
+						m_flNextPrimaryAttack = GetNextAttackDelay(0.25);
+	#endif
 #endif
 					return TRUE;
 				}
@@ -337,10 +341,12 @@ int CCrowbar::Swing( int fFirst )
 		SetThink( &CCrowbar::Smack );
 		pev->nextthink = gpGlobals->time + 0.2f;
 #endif
-#if CROWBAR_DELAY_FIX
-		m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.25f;
-#else
-		m_flNextPrimaryAttack = GetNextAttackDelay( 0.25f );
+#ifndef MLG_MODE
+	#if CROWBAR_DELAY_FIX
+			m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.25f;
+	#else
+			m_flNextPrimaryAttack = GetNextAttackDelay( 0.25f );
+	#endif
 #endif
 	}
 #ifdef CROWBAR_IDLE_ANIM
