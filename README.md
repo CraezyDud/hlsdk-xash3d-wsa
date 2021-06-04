@@ -75,6 +75,8 @@ or when using waf:
 
 \[to see more on waf do `./waf --help`\]
 
+### *(also try out --mlg-mode)
+
 ### Building GoldSource-compatible libraries
 
 To enable building the goldsource compatible client library add GOLDSOURCE_SUPPORT flag when calling cmake:
