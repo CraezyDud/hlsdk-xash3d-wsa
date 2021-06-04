@@ -51,6 +51,10 @@ def options(opt):
 		
 	grp.add_option('--fix-handgrenade-throw', action = 'store_true', dest = 'FIX_HANDGRENADE_THROW', default = False,
 		help = 'Fixes the \'if\' that is supposed to activate after a grenade throw, animation is not restored on false. (probably multiplayer incompatible with people that don\'t have this) [default: %default]')
+	
+	grp.add_option('--mgl-mode', action = 'store_true', dest = 'MLG_MODE', default = False,
+		help = 'limitless ammunition and no fire delays, just crazy. [default: %default]')
+	
 	opt.load('subproject')
 
 	opt.add_subproject(['cl_dll', 'dlls'])
@@ -90,6 +94,7 @@ def configure(conf):
 	conf.env.GOLDSRC     = conf.options.GOLDSRC
 	conf.env.LEAVE_AMMO_IN_CLIP   = conf.options.LEAVE_AMMO_IN_CLIP
 	conf.env.FIX_HANDGRENADE_THROW   = conf.options.FIX_HANDGRENADE_THROW
+	conf.env.MLG_MODE   = conf.options.MLG_MODE
 
 	# Force XP compability, all build targets should add
 	# subsystem=bld.env.MSVC_SUBSYSTEM
