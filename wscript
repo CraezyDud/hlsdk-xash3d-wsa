@@ -52,7 +52,7 @@ def options(opt):
 	grp.add_option('--fix-handgrenade-throw', action = 'store_true', dest = 'FIX_HANDGRENADE_THROW', default = False,
 		help = 'Fixes the \'if\' that is supposed to activate after a grenade throw, animation is not restored on false. (probably multiplayer incompatible with people that don\'t have this) [default: %default]')
 	
-	grp.add_option('--mgl-mode', action = 'store_true', dest = 'MLG_MODE', default = False,
+	grp.add_option('--mlg-mode', action = 'store_true', dest = 'MLG_MODE', default = False,
 		help = 'limitless ammunition and no fire delays, just crazy. [default: %default]')
 	
 	opt.load('subproject')
