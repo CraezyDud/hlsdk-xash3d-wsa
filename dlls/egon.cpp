@@ -190,9 +190,11 @@ void CEgon::Attack( void )
 		{
 			if( !HasAmmo() )
 			{
-				m_flNextPrimaryAttack = m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.25f;
-				PlayEmptySound( );
-				return;
+				#ifndef MLG_MODE
+					m_flNextPrimaryAttack = m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.25f;
+					PlayEmptySound( );
+					return;
+				#endif
 			}
 
 			m_flAmmoUseTime = gpGlobals->time;// start using ammo ASAP.
@@ -220,11 +222,13 @@ void CEgon::Attack( void )
 				pev->fuser1 = 1000;
 			}
 
-			if( !HasAmmo() )
-			{
-				EndAttack();
-				m_flNextPrimaryAttack = m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 1.0f;
-			}
+			#ifndef MLG_MODE
+				if( !HasAmmo() )
+				{
+					EndAttack();
+					m_flNextPrimaryAttack = m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 1.0f;
+				}
+			#endif
 			break;
 		}
 	}
@@ -507,7 +511,9 @@ void CEgon::EndAttack( void )
 	PLAYBACK_EVENT_FULL( FEV_GLOBAL | FEV_RELIABLE, m_pPlayer->edict(), m_usEgonStop, 0.0f, m_pPlayer->pev->origin, m_pPlayer->pev->angles, 0.0f, 0.0f, bMakeNoise, 0, 0, 0 );
 
 	m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 2.0f;
-	m_flNextPrimaryAttack = m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5f;
+	#ifndef MLG_MODE
+		m_flNextPrimaryAttack = m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5f;
+	#endif
 
 	m_fireState = FIRE_OFF;
 
