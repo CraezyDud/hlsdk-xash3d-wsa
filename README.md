@@ -75,7 +75,7 @@ or when using waf:
 
 \[to see more on waf do `./waf --help`\]
 
-### *(also try out --mlg-mode)
+### *(also try out --mlg-mode)*
 
 ### Building GoldSource-compatible libraries
 
