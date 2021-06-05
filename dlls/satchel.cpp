@@ -353,9 +353,15 @@ void CSatchel::PrimaryAttack()
 			}
 
 			m_chargeReady = SATCHEL_RELOAD;
-			m_flNextPrimaryAttack = GetNextAttackDelay( 0.5f );
-			m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5f;
-			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.5f;
+			#ifndef MLG_MODE
+				m_flNextPrimaryAttack = GetNextAttackDelay( 0.5f );
+				m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5f;
+				m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.5f;
+			#else
+				m_flNextPrimaryAttack = GetNextAttackDelay( 0.05f );
+				m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.05f;
+				m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.05f;
+			#endif
 			break;
 		}
 	case SATCHEL_RELOAD:
@@ -398,10 +404,19 @@ void CSatchel::Throw( void )
 
 		m_chargeReady = SATCHEL_READY;
 
-		m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]--;
+		#ifndef MLG_MODE
+			m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]--;
+		#else
+			m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]++;
+		#endif
 
-		m_flNextPrimaryAttack = GetNextAttackDelay( 1.0f );
-		m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5f;
+		#ifndef MLG_MODE
+			m_flNextPrimaryAttack = GetNextAttackDelay( 1.0f );
+			m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5f;
+		#else
+			m_flNextPrimaryAttack = GetNextAttackDelay( 0.05f );
+			m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.05f;
+		#endif
 	}
 }
 
@@ -440,13 +455,20 @@ void CSatchel::WeaponIdle( void )
 
 		// use tripmine animations
 		strcpy( m_pPlayer->m_szAnimExtention, "trip" );
-
-		m_flNextPrimaryAttack = GetNextAttackDelay( 0.5f );
-		m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5f;
+		
+		#ifndef MLG_MODE
+			m_flNextPrimaryAttack = GetNextAttackDelay( 0.5f );
+			m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5f;
+		#else
+			m_flNextPrimaryAttack = GetNextAttackDelay( 0.05f );
+			m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.05f;
+		#endif
 		m_chargeReady = SATCHEL_IDLE;
 		break;
 	}
-	m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + UTIL_SharedRandomFloat( m_pPlayer->random_seed, 10, 15 );// how long till we do this again.
+	#ifndef MLG_MODE
+		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + UTIL_SharedRandomFloat( m_pPlayer->random_seed, 10, 15 );// how long till we do this again.
+	#endif
 }
 
 //=========================================================
