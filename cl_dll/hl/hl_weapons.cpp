@@ -359,7 +359,6 @@ void CBasePlayerWeapon::ItemPostFrame( void )
 	{
 #if 1
 		// complete the reload. 
-		
 		ItemInfo itemInfo;
 		memset( &itemInfo, 0, sizeof( itemInfo ) );
 		GetItemInfo( &itemInfo );
