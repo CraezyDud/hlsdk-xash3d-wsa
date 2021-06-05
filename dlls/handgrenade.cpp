@@ -75,8 +75,15 @@ int CHandGrenade::GetItemInfo( ItemInfo *p )
 	return 1;
 }
 
+#ifdef MLG_MODE
+	bool Threw = FALSE;
+#endif
+
 BOOL CHandGrenade::Deploy()
 {
+	#ifdef MLG_MODE
+		Threw = FALSE;
+	#endif
 	m_flReleaseThrow = -1;
 	return DefaultDeploy( "models/v_grenade.mdl", "models/p_grenade.mdl", HANDGRENADE_DRAW, "crowbar" );
 }
@@ -120,14 +127,11 @@ void CHandGrenade::PrimaryAttack()
 	#endif
 	{
 		m_flStartThrow = gpGlobals->time;
-		#ifndef MLG_MODE
-			m_flReleaseThrow = 0.0f;
-		#endif
+		m_flReleaseThrow = 0.0f;
 
 		SendWeaponAnim( HANDGRENADE_PINPULL );
-		#ifndef MLG_MODE
-			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.5f;
-		#else
+		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.5f;
+		#ifdef MLG_MODE
 			ThrowGrenadeHere();
 		#endif
 	}
@@ -137,19 +141,24 @@ void CHandGrenade::WeaponIdle( void )
 {
 	if( m_flReleaseThrow == 0.0f && m_flStartThrow )
 		 m_flReleaseThrow = gpGlobals->time;
-
-	#ifndef MLG_MODE
+		
 		if( m_flTimeWeaponIdle > UTIL_WeaponTimeBase() )
 			return;
-	#endif
 
-	if( m_flStartThrow )
+	#ifndef MLG_MODE
+		if( m_flStartThrow )
+		{
+			ThrowGrenadeHere();
+			return;
+		}
+		else if( m_flReleaseThrow > 0.0f )
+	#else
+		if( Threw == TRUE )
+	#endif
 	{
-		ThrowGrenadeHere();
-		return;
-	}
-	else if( m_flReleaseThrow > 0.0f )
-	{
+		#ifdef MLG_MODE
+			Threw = FALSE;
+		#endif
 		// we've finished the throw, restart.
 		m_flStartThrow = 0.0f;
 
@@ -252,6 +261,9 @@ void CHandGrenade::ThrowGrenadeHere( void )
 				// animation, weapon idle will automatically retire the weapon for us.
 				m_flTimeWeaponIdle = m_flNextSecondaryAttack = m_flNextPrimaryAttack = GetNextAttackDelay( 0.5f );// ensure that the animation can finish playing
 			}
+		#endif
+		#ifdef MLG_MODE
+			Threw = TRUE;
 		#endif
 		return;
 }
