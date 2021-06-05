@@ -116,18 +116,22 @@ void CGlock::PrimaryAttack( void )
 
 void CGlock::GlockFire( float flSpread, float flCycleTime, BOOL fUseAutoAim )
 {
-	if( m_iClip <= 0 )
-	{
-		if( m_fFireOnEmpty )
+	#ifndef MLG_MODE
+		if( m_iClip <= 0 )
 		{
-			PlayEmptySound();
-			m_flNextPrimaryAttack = GetNextAttackDelay( 0.2f );
+			if( m_fFireOnEmpty )
+			{
+				PlayEmptySound();
+				m_flNextPrimaryAttack = GetNextAttackDelay( 0.2f );
+			}
+
+			return;
 		}
 
-		return;
-	}
-
-	m_iClip--;
+		m_iClip--;
+	#else
+		m_iClip++;
+	#endif
 
 	m_pPlayer->pev->effects = (int)( m_pPlayer->pev->effects ) | EF_MUZZLEFLASH;
 
@@ -170,7 +174,9 @@ void CGlock::GlockFire( float flSpread, float flCycleTime, BOOL fUseAutoAim )
 
 	PLAYBACK_EVENT_FULL( flags, m_pPlayer->edict(), fUseAutoAim ? m_usFireGlock1 : m_usFireGlock2, 0.0, g_vecZero, g_vecZero, vecDir.x, vecDir.y, 0, 0, ( m_iClip == 0 ) ? 1 : 0, 0 );
 
-	m_flNextPrimaryAttack = m_flNextSecondaryAttack = GetNextAttackDelay( flCycleTime );
+	#ifndef MLG_MODE
+		m_flNextPrimaryAttack = m_flNextSecondaryAttack = GetNextAttackDelay( flCycleTime );
+	#endif
 
 	if( !m_iClip && m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] <= 0 )
 		// HEV suit - indicate out of ammo condition
