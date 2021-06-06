@@ -21,6 +21,7 @@
 #include	"decals.h"
 #include	"gamerules.h"
 #include	"game.h"
+#include	"shake.h"
 
 void EntvarsKeyvalue( entvars_t *pev, KeyValueData *pkvd );
 
@@ -491,7 +492,7 @@ CBaseEntity * EHANDLE::operator -> ()
 }
 
 // give health
-int CBaseEntity::TakeHealth( float flHealth, int bitsDamageType )
+int CBaseEntity::TakeHealth( float flHealth, int bitsDamageType, int iJuice )
 {
 	if( !pev->takedamage )
 		return 0;
@@ -501,6 +502,13 @@ int CBaseEntity::TakeHealth( float flHealth, int bitsDamageType )
 		return 0;
 
 	pev->health += flHealth;
+	
+	#ifdef SCREEN_DAMAGE
+		if( iJuice > -1 )
+			UTIL_ScreenFade( this, Vector( 0, 255, 10 ), 0.5f, 0.5f, iJuice*2, FFADE_IN );
+		else
+			UTIL_ScreenFade( this, Vector( 0, 255, 0 ), flHealth/5, 0.5f, flHealth*2, FFADE_IN );
+	#endif
 
 	if( pev->health > pev->max_health )
 		pev->health = pev->max_health;
