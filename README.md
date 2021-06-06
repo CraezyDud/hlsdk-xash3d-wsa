@@ -1,4 +1,4 @@
-# Half-Life SDK for Xash3D [![Build Status](https://github.com/FWGS/hlsdk-xash3d/actions/workflows/.github.yml/badge.svg?branch=master)](https://github.com/FWGS/hlsdk-xash3d/actions/workflows/.github.yml) [![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/FWGS/hlsdk-xash3d?svg=true)](https://ci.appveyor.com/project/a1batross/hlsdk-xash3d)
+# Half-Life SDK for Xash3D [![Build Status](https://github.com/MrSwedish/hlsdk-xash3d-wsa/actions/workflows/.github.yml/badge.svg?branch=master)](https://github.com/MrSwedish/hlsdk-xash3d-wsa/actions/workflows/.github.yml) [![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/MrSwedish/hlsdk-xash3d-wsa?svg=true)](https://ci.appveyor.com/project/MrSwedish/hlsdk-xash3d-wsa)
 
 Half-Life SDK for Xash3D & GoldSource with some more fixes and additions.
 
