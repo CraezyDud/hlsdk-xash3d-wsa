@@ -24,6 +24,8 @@
 #include "gamerules.h"
 #include "game.h"
 
+#define FFADE_IN		0x0000 //Must hardcode because of weird error
+
 extern int gmsgItemPickup;
 
 class CHealthKit : public CItem
@@ -219,7 +221,11 @@ void CWallHealth::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE u
 	}
 
 	// charge the player
-	if( pActivator->TakeHealth( 1, DMG_GENERIC ) )
+	#ifdef SCREEN_DAMAGE
+		if( pActivator->TakeHealth( 1, DMG_GENERIC, m_iJuice ) )
+	#else
+		if( pActivator->TakeHealth( 1, DMG_GENERIC ) )
+	#endif
 	{
 		m_iJuice--;
 	}
