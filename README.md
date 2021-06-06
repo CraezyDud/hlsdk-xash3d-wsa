@@ -71,7 +71,7 @@ TODO: describe what it is.
 
 or when using waf:
 
-     ./waf configure -T release --leave-bullet-in-chamber --fix-handgrenade-throw
+     ./waf configure -T release --leave-bullet-in-chamber --fix-handgrenade-throw --screen-damage
 
 \[to see more on waf do `./waf --help`\]
 
