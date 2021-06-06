@@ -98,6 +98,7 @@ def configure(conf):
 	conf.env.LEAVE_AMMO_IN_CLIP   = conf.options.LEAVE_AMMO_IN_CLIP
 	conf.env.FIX_HANDGRENADE_THROW   = conf.options.FIX_HANDGRENADE_THROW
 	conf.env.MLG_MODE   = conf.options.MLG_MODE
+	conf.env.SCREEN_DAMAGE = conf.options.SCREEN_DAMAGE
 
 	# Force XP compability, all build targets should add
 	# subsystem=bld.env.MSVC_SUBSYSTEM
