@@ -14,8 +14,6 @@ environment:
 #    - os: Visual Studio 2017
 #      GENERATOR_NAME: "Visual Studio 15 2017"
 
-clone_folder: c:\projects\xash\hlsdk-xash3d-wsa
-
 build:
   project: INSTALL.vcxproj
   verbosity: normal
