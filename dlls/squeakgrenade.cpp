@@ -528,11 +528,17 @@ void CSqueak::PrimaryAttack()
 
 			m_pPlayer->m_iWeaponVolume = QUIET_GUN_VOLUME;
 
-			m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]--;
+			#ifndef MLG_MODE
+				m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]--;
+			#else
+				m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]++;
+			#endif
 
 			m_fJustThrown = 1;
 
-			m_flNextPrimaryAttack = GetNextAttackDelay( 0.3f );
+			#ifndef MLG_MODE
+				m_flNextPrimaryAttack = GetNextAttackDelay( 0.3f );
+			#endif
 			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 1.0f;
 		}
 	}
