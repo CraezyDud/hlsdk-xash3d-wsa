@@ -761,7 +761,7 @@ public:
 	int iItemSlot( void ) { return 4; }
 	int GetItemInfo(ItemInfo *p);
 	int AddToPlayer( CBasePlayer *pPlayer );
-	BOOL IsUseable();
+
 	BOOL Deploy( void );
 	void Holster( int skiplocal = 0  );
 

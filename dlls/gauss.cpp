@@ -128,12 +128,6 @@ int CGauss::GetItemInfo( ItemInfo *p )
 	return 1;
 }
 
-BOOL CGauss::IsUseable()
-{
-	// Currently charging, allow the player to fire it first. - Solokiller
-	return CBasePlayerWeapon::IsUseable() || m_fInAttack != 0;
-}
-
 BOOL CGauss::Deploy()
 {
 	m_pPlayer->m_flPlayAftershock = 0.0;
@@ -289,7 +283,6 @@ void CGauss::SecondaryAttack()
                         return;
                 }
     #endif
-
 		// during the charging process, eat one bit of ammo every once in a while
 		#ifndef MLG_MODE
 			if( UTIL_WeaponTimeBase() >= m_pPlayer->m_flNextAmmoBurn && m_pPlayer->m_flNextAmmoBurn != 1000 )
@@ -319,6 +312,16 @@ void CGauss::SecondaryAttack()
 				#endif
 				m_pPlayer->m_flNextAmmoBurn = UTIL_WeaponTimeBase() + 0.3f;
 			}
+		}
+
+		if( m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] <= 0 )
+		{
+			// out of ammo! force the gun to fire
+			StartFire();
+			m_fInAttack = 0;
+			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 1.0f;
+			m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 1;
+			return;
 		}
 
 		if( UTIL_WeaponTimeBase() >= m_pPlayer->m_flAmmoStartCharge )
