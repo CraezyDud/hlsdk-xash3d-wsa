@@ -55,6 +55,9 @@ def options(opt):
 	grp.add_option('--mlg-mode', action = 'store_true', dest = 'MLG_MODE', default = False,
 		help = 'limitless ammunition and no fire delays, just crazy. [default: %default]')
 	
+	grp.add_option('--screen-damage', action = 'store_true', dest = 'SCREEN_DAMAGE', default = False,
+		help = 'show damage and heal by tinting the screen. [default: %default]')
+	
 	opt.load('subproject')
 
 	opt.add_subproject(['cl_dll', 'dlls'])
