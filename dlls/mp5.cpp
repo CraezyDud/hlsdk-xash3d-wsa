@@ -172,7 +172,7 @@ void CMP5::PrimaryAttack()
 	}
 
 	int flags;
-#if defined( CLIENT_WEAPONS )
+#if CLIENT_WEAPONS
 	flags = FEV_NOTHOST;
 #else
 	flags = 0;
@@ -234,7 +234,7 @@ void CMP5::SecondaryAttack( void )
 					gpGlobals->v_forward * 800.0f );
 
 	int flags;
-#if defined( CLIENT_WEAPONS )
+#if CLIENT_WEAPONS
 	flags = FEV_NOTHOST;
 #else
 	flags = 0;

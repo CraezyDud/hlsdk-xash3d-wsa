@@ -145,7 +145,7 @@ void CShotgun::PrimaryAttack()
 	#endif
 
 	int flags;
-#if defined( CLIENT_WEAPONS )
+#if CLIENT_WEAPONS
 	flags = FEV_NOTHOST;
 #else
 	flags = 0;
@@ -225,7 +225,7 @@ void CShotgun::SecondaryAttack( void )
 	#endif
 
 	int flags;
-#if defined( CLIENT_WEAPONS )
+#if CLIENT_WEAPONS
 	flags = FEV_NOTHOST;
 #else
 	flags = 0;
