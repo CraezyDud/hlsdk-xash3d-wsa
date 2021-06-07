@@ -97,8 +97,8 @@ void CPython::Precache( void )
 
 BOOL CPython::Deploy()
 {
-	#ifndef MLG_MODE
-		#ifdef CLIENT_DLL
+	#if !MLG_MODE
+		#if CLIENT_DLL
 			if( bIsMultiplayer() )
 		#else
 			if( g_pGameRules->IsMultiplayer() )
@@ -134,15 +134,15 @@ void CPython::Holster( int skiplocal /* = 0 */ )
 
 void CPython::SecondaryAttack( void )
 {
-	#ifndef MLG_MODE
-		#ifdef CLIENT_DLL
+	#if !MLG_MODE
+		#if CLIENT_DLL
 			if( !bIsMultiplayer() )
 		#else
 			if( !g_pGameRules->IsMultiplayer() )
 		#endif
-			{
+		{
 				return;
-			}
+		}
 	#endif
 
 	if( m_pPlayer->pev->fov != 0 )
@@ -236,7 +236,7 @@ void CPython::Reload( void )
 	}
 
 	int bUseScope = FALSE;
-#ifdef CLIENT_DLL
+#if CLIENT_DLL
 	bUseScope = bIsMultiplayer();
 #else
 	bUseScope = g_pGameRules->IsMultiplayer();
@@ -287,7 +287,7 @@ void CPython::WeaponIdle( void )
 	}
 	
 	int bUseScope = FALSE;
-#ifdef CLIENT_DLL
+#if CLIENT_DLL
 	bUseScope = bIsMultiplayer();
 #else
 	bUseScope = g_pGameRules->IsMultiplayer();

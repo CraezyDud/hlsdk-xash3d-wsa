@@ -270,7 +270,7 @@ void CEgon::Fire( const Vector &vecOrigSrc, const Vector &vecDir )
 	if( tr.fAllSolid )
 		return;
 
-#ifndef CLIENT_DLL
+#if !CLIENT_DLL
 	CBaseEntity *pEntity = CBaseEntity::Instance( tr.pHit );
 
 	if( pEntity == NULL )
@@ -293,7 +293,7 @@ void CEgon::Fire( const Vector &vecOrigSrc, const Vector &vecDir )
 	switch( m_fireMode )
 	{
 	case FIRE_NARROW:
-#ifndef CLIENT_DLL
+#if !CLIENT_DLL
 		if( pev->dmgtime < gpGlobals->time )
 		{
 			// Narrow mode only does damage to the entity it hits
@@ -329,7 +329,7 @@ void CEgon::Fire( const Vector &vecOrigSrc, const Vector &vecDir )
 		timedist = ( pev->dmgtime - gpGlobals->time ) / GetPulseInterval();
 		break;
 	case FIRE_WIDE:
-#ifndef CLIENT_DLL
+#if !CLIENT_DLL
 		if( pev->dmgtime < gpGlobals->time )
 		{
 			// wide mode does damage to the ent, and radius damage
@@ -391,7 +391,7 @@ void CEgon::Fire( const Vector &vecOrigSrc, const Vector &vecDir )
 
 void CEgon::UpdateEffect( const Vector &startPoint, const Vector &endPoint, float timeBlend )
 {
-#ifndef CLIENT_DLL
+#if !CLIENT_DLL
 	if( !m_pBeam )
 	{
 		CreateEffect();
@@ -417,7 +417,7 @@ void CEgon::UpdateEffect( const Vector &startPoint, const Vector &endPoint, floa
 
 void CEgon::CreateEffect( void )
 {
-#ifndef CLIENT_DLL
+#if !CLIENT_DLL
 	DestroyEffect();
 
 	m_pBeam = CBeam::BeamCreate( EGON_BEAM_SPRITE, 40 );
@@ -463,7 +463,7 @@ void CEgon::CreateEffect( void )
 
 void CEgon::DestroyEffect( void )
 {
-#ifndef CLIENT_DLL
+#if !CLIENT_DLL
 	if( m_pBeam )
 	{
 		UTIL_Remove( m_pBeam );
