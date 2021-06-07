@@ -341,7 +341,7 @@ int CCrowbar::Swing( int fFirst )
 		SetThink( &CCrowbar::Smack );
 		pev->nextthink = gpGlobals->time + 0.2f;
 #endif
-#ifndef MLG_MODE
+#if !MLG_MODE
 	#if CROWBAR_DELAY_FIX
 			m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.25f;
 	#else

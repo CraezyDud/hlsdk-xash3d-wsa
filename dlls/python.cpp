@@ -161,7 +161,7 @@ void CPython::SecondaryAttack( void )
 
 void CPython::PrimaryAttack()
 {
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		// don't fire underwater
 		if( m_pPlayer->pev->waterlevel == 3 )
 		{
@@ -187,7 +187,7 @@ void CPython::PrimaryAttack()
 	m_pPlayer->m_iWeaponVolume = LOUD_GUN_VOLUME;
 	m_pPlayer->m_iWeaponFlash = BRIGHT_GUN_FLASH;
 
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		m_iClip--;
 	#else
 		m_iClip++;
@@ -218,7 +218,7 @@ void CPython::PrimaryAttack()
 		// HEV suit - indicate out of ammo condition
 		m_pPlayer->SetSuitUpdate( "!HEV_AMO0", FALSE, 0 );
 
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		m_flNextPrimaryAttack = 0.75f;
 	#endif
 	m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + UTIL_SharedRandomFloat( m_pPlayer->random_seed, 10.0f, 15.0f );

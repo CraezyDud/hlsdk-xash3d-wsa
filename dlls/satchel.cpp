@@ -353,7 +353,7 @@ void CSatchel::PrimaryAttack()
 			}
 
 			m_chargeReady = SATCHEL_RELOAD;
-			#ifndef MLG_MODE
+			#if !MLG_MODE
 				m_flNextPrimaryAttack = GetNextAttackDelay( 0.5f );
 				m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5f;
 				m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.5f;
@@ -404,13 +404,13 @@ void CSatchel::Throw( void )
 
 		m_chargeReady = SATCHEL_READY;
 
-		#ifndef MLG_MODE
+		#if !MLG_MODE
 			m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]--;
 		#else
 			m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]++;
 		#endif
 
-		#ifndef MLG_MODE
+		#if !MLG_MODE
 			m_flNextPrimaryAttack = GetNextAttackDelay( 1.0f );
 			m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5f;
 		#else
@@ -456,7 +456,7 @@ void CSatchel::WeaponIdle( void )
 		// use tripmine animations
 		strcpy( m_pPlayer->m_szAnimExtention, "trip" );
 		
-		#ifndef MLG_MODE
+		#if !MLG_MODE
 			m_flNextPrimaryAttack = GetNextAttackDelay( 0.5f );
 			m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5f;
 		#else
@@ -466,7 +466,7 @@ void CSatchel::WeaponIdle( void )
 		m_chargeReady = SATCHEL_IDLE;
 		break;
 	}
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + UTIL_SharedRandomFloat( m_pPlayer->random_seed, 10, 15 );// how long till we do this again.
 	#endif
 }

@@ -432,7 +432,7 @@ void CRpg::Holster( int skiplocal /* = 0 */ )
 
 void CRpg::PrimaryAttack()
 {
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		if( m_iClip )
 	#else
 		if( true )
@@ -465,7 +465,7 @@ void CRpg::PrimaryAttack()
 #endif
 		PLAYBACK_EVENT( flags, m_pPlayer->edict(), m_usRpg );
 
-		#ifndef MLG_MODE
+		#if !MLG_MODE
 			m_iClip--; 
 			m_flNextPrimaryAttack = GetNextAttackDelay( 1.5f );
 		#else

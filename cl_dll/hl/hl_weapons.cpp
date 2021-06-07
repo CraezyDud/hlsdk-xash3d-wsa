@@ -151,7 +151,7 @@ bool LeaveInChamberGL = FALSE;
 
 BOOL CBasePlayerWeapon::DefaultReload( int iClipSize, int iAnim, float fDelay, int body, bool LeaveInChamber )
 {
-	#ifdef LEAVE_AMMO_IN_CLIP
+	#if LEAVE_AMMO_IN_CLIP
 		LeaveInChamberGL = LeaveInChamber;
 	#else
 		LeaveInChamber = FALSE;
@@ -160,7 +160,7 @@ BOOL CBasePlayerWeapon::DefaultReload( int iClipSize, int iAnim, float fDelay, i
 	if( m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] <= 0 )
 		return FALSE;
 	
-	#ifdef LEAVE_AMMO_IN_CLIP
+	#if LEAVE_AMMO_IN_CLIP
 		int j = 0;
 			
 		if( (LeaveInChamber == TRUE) && (m_iClip<1) )
@@ -196,7 +196,7 @@ CBasePlayerWeapon::CanDeploy
 */
 BOOL CBasePlayerWeapon::CanDeploy( void ) 
 {
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		BOOL bHasAmmo = 0;
 
 		if( !pszAmmo1() )

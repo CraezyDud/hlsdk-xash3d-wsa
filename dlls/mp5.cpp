@@ -122,7 +122,7 @@ BOOL CMP5::Deploy()
 
 void CMP5::PrimaryAttack()
 {
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		// don't fire underwater
 		if( m_pPlayer->pev->waterlevel == 3 )
 		{
@@ -142,7 +142,7 @@ void CMP5::PrimaryAttack()
 	m_pPlayer->m_iWeaponVolume = NORMAL_GUN_VOLUME;
 	m_pPlayer->m_iWeaponFlash = NORMAL_GUN_FLASH;
 
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		m_iClip--;
 	#else
 		m_iClip++;
@@ -183,7 +183,7 @@ void CMP5::PrimaryAttack()
 		// HEV suit - indicate out of ammo condition
 		m_pPlayer->SetSuitUpdate( "!HEV_AMO0", FALSE, 0 );
 
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		m_flNextPrimaryAttack = GetNextAttackDelay( 0.1f );
 
 		if( m_flNextPrimaryAttack < UTIL_WeaponTimeBase() )
@@ -195,7 +195,7 @@ void CMP5::PrimaryAttack()
 
 void CMP5::SecondaryAttack( void )
 {
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		// don't fire underwater
 		if( m_pPlayer->pev->waterlevel == 3 )
 		{
@@ -217,7 +217,7 @@ void CMP5::SecondaryAttack( void )
 	m_pPlayer->m_iExtraSoundTypes = bits_SOUND_DANGER;
 	m_pPlayer->m_flStopExtraSoundTime = UTIL_WeaponTimeBase() + 0.2f;
 	
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		m_pPlayer->m_rgAmmo[m_iSecondaryAmmoType]--;
 	#else
 		m_pPlayer->m_rgAmmo[m_iSecondaryAmmoType]++;
@@ -242,7 +242,7 @@ void CMP5::SecondaryAttack( void )
 	PLAYBACK_EVENT( flags, m_pPlayer->edict(), m_usMP52 );
 
 
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		m_flNextPrimaryAttack = GetNextAttackDelay( 1.0f );
 		m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 1.0f;
 	#endif

@@ -403,7 +403,7 @@ void CCrossbow::FireBolt()
 	
 	if( m_iClip == 0 )
 	{
-		#ifndef MLG_MODE
+		#if !MLG_MODE
 			PlayEmptySound();
 			return;
 		#else
@@ -413,7 +413,7 @@ void CCrossbow::FireBolt()
 
 	m_pPlayer->m_iWeaponVolume = QUIET_GUN_VOLUME;
 
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		m_iClip--;
 	#else
 		m_iClip++;
@@ -461,12 +461,12 @@ void CCrossbow::FireBolt()
 	if( !m_iClip && m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] <= 0 )
 		// HEV suit - indicate out of ammo condition
 		m_pPlayer->SetSuitUpdate( "!HEV_AMO0", FALSE, 0 );
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		m_flNextPrimaryAttack = GetNextAttackDelay( 0.75f );
 	#endif
 	m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.75f;
 
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		if( m_iClip != 0 )
 			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 5.0f;
 		else
@@ -501,7 +501,7 @@ void CCrossbow::Reload( void )
 		SecondaryAttack();
 	}
 
-	#ifdef LEAVE_AMMO_IN_CLIP
+	#if LEAVE_AMMO_IN_CLIP
 		if( DefaultReload( CROSSBOW_MAX_CLIP, CROSSBOW_RELOAD, 4.5f , 0, TRUE) )
 	#else
 		if( DefaultReload( CROSSBOW_MAX_CLIP, CROSSBOW_RELOAD, 4.5f ) )

@@ -115,7 +115,7 @@ BOOL CShotgun::Deploy()
 
 void CShotgun::PrimaryAttack()
 {
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		// don't fire underwater
 		if( m_pPlayer->pev->waterlevel == 3 )
 		{
@@ -136,7 +136,7 @@ void CShotgun::PrimaryAttack()
 	m_pPlayer->m_iWeaponVolume = LOUD_GUN_VOLUME;
 	m_pPlayer->m_iWeaponFlash = NORMAL_GUN_FLASH;
 
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		m_iClip--;
 	#else
 		m_iClip++;
@@ -183,7 +183,7 @@ void CShotgun::PrimaryAttack()
 	//if( m_iClip != 0 )
 		m_flPumpTime = gpGlobals->time + 0.5f;
 
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		m_flNextPrimaryAttack = GetNextAttackDelay( 0.75f );
 		m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.75f;
 	#endif
@@ -196,7 +196,7 @@ void CShotgun::PrimaryAttack()
 
 void CShotgun::SecondaryAttack( void )
 {
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 	// don't fire underwater
 		if( m_pPlayer->pev->waterlevel == 3 )
 		{
@@ -216,7 +216,7 @@ void CShotgun::SecondaryAttack( void )
 	m_pPlayer->m_iWeaponVolume = LOUD_GUN_VOLUME;
 	m_pPlayer->m_iWeaponFlash = NORMAL_GUN_FLASH;
 
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		m_iClip -= 2;
 	#else
 		m_iClip += 2;
@@ -264,7 +264,7 @@ void CShotgun::SecondaryAttack( void )
 	//if( m_iClip != 0 )
 		m_flPumpTime = gpGlobals->time + 0.95f;
 
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		m_flNextPrimaryAttack = GetNextAttackDelay( 1.5f );
 		m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 1.5f;
 	#endif
@@ -278,7 +278,7 @@ void CShotgun::SecondaryAttack( void )
 
 void CShotgun::Reload( void )
 {
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		if( m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] <= 0 || m_iClip == SHOTGUN_MAX_CLIP )
 			return;
 	#endif
@@ -292,11 +292,11 @@ void CShotgun::Reload( void )
 	{
 		SendWeaponAnim( SHOTGUN_START_RELOAD );
 		m_fInSpecialReload = 1;
-		#ifndef MLG_MODE
+		#if !MLG_MODE
 			m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.6f;
 		#endif
 		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.6f;
-		#ifndef MLG_MODE
+		#if !MLG_MODE
 			m_flNextPrimaryAttack = GetNextAttackDelay( 1.0f );
 			m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 1.0f;
 		#endif
@@ -316,7 +316,7 @@ void CShotgun::Reload( void )
 
 		SendWeaponAnim( SHOTGUN_RELOAD );
 
-		#ifndef MLG_MODE
+		#if !MLG_MODE
 			m_flNextReload = UTIL_WeaponTimeBase() + 0.5f;
 			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.5f;
 		#else
@@ -328,7 +328,7 @@ void CShotgun::Reload( void )
 	{
 		// Add them to the clip
 		m_iClip += 1;
-		#ifndef MLG_MODE
+		#if !MLG_MODE
 			m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] -= 1;
 		#else
 			m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] += 1;

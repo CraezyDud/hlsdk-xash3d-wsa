@@ -57,7 +57,7 @@ int WeaponsResource::CountAmmo( int iId )
 
 int WeaponsResource::HasAmmo( WEAPON *p )
 {
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		if( !p )
 			return FALSE;
 

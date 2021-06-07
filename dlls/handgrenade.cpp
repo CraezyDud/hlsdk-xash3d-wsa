@@ -75,13 +75,13 @@ int CHandGrenade::GetItemInfo( ItemInfo *p )
 	return 1;
 }
 
-#ifdef MLG_MODE
+#if MLG_MODE
 	bool Threw = FALSE;
 #endif
 
 BOOL CHandGrenade::Deploy()
 {
-	#ifdef MLG_MODE
+	#if MLG_MODE
 		Threw = FALSE;
 	#endif
 	m_flReleaseThrow = -1;
@@ -120,7 +120,7 @@ void CHandGrenade::Holster( int skiplocal /* = 0 */ )
 
 void CHandGrenade::PrimaryAttack()
 {
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		if( !m_flStartThrow && m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] > 0 )
 	#else
 		if( true )
@@ -131,7 +131,7 @@ void CHandGrenade::PrimaryAttack()
 
 		SendWeaponAnim( HANDGRENADE_PINPULL );
 		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.5f;
-		#ifdef MLG_MODE
+		#if MLG_MODE
 			ThrowGrenadeHere();
 		#endif
 	}
@@ -145,7 +145,7 @@ void CHandGrenade::WeaponIdle( void )
 		if( m_flTimeWeaponIdle > UTIL_WeaponTimeBase() )
 			return;
 
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		if( m_flStartThrow )
 		{
 			ThrowGrenadeHere();
@@ -156,7 +156,7 @@ void CHandGrenade::WeaponIdle( void )
 		if( Threw == TRUE )
 	#endif
 	{
-		#ifdef MLG_MODE
+		#if MLG_MODE
 			Threw = FALSE;
 		#endif
 		// we've finished the throw, restart.
@@ -242,18 +242,18 @@ void CHandGrenade::ThrowGrenadeHere( void )
 			m_flReleaseThrow = 0.0f;
 		#endif
 		m_flStartThrow = 0.0f;
-		#ifndef MLG_MODE
+		#if !MLG_MODE
 			m_flNextPrimaryAttack = GetNextAttackDelay( 0.5f );
 			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.5f;
 		#endif
 
-		#ifndef MLG_MODE
+		#if !MLG_MODE
 			m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]--;
 		#else
 			m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]++;
 		#endif
 
-		#ifndef MLG_MODE
+		#if !MLG_MODE
 			if( !m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] )
 			{
 				// just threw last grenade
@@ -262,7 +262,7 @@ void CHandGrenade::ThrowGrenadeHere( void )
 				m_flTimeWeaponIdle = m_flNextSecondaryAttack = m_flNextPrimaryAttack = GetNextAttackDelay( 0.5f );// ensure that the animation can finish playing
 			}
 		#endif
-		#ifdef MLG_MODE
+		#if MLG_MODE
 			Threw = TRUE;
 		#endif
 		return;

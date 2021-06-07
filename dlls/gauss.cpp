@@ -146,7 +146,7 @@ void CGauss::Holster( int skiplocal /* = 0 */ )
 
 void CGauss::PrimaryAttack()
 {
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		// don't fire underwater
 		if( m_pPlayer->pev->waterlevel == 3 )
 		{
@@ -166,7 +166,7 @@ void CGauss::PrimaryAttack()
 	m_pPlayer->m_iWeaponVolume = GAUSS_PRIMARY_FIRE_VOLUME;
 	m_fPrimaryFire = TRUE;
 
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] -= 2;
 	#else
 		m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] += 2;
@@ -175,14 +175,14 @@ void CGauss::PrimaryAttack()
 	StartFire();
 	m_fInAttack = 0;
 	m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 1.0f;
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.2f;
 	#endif
 }
 
 void CGauss::SecondaryAttack()
 {
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 	// don't fire underwater
 		if( m_pPlayer->pev->waterlevel == 3 )
 		{
@@ -207,7 +207,7 @@ void CGauss::SecondaryAttack()
 
 	if( m_fInAttack == 0 )
 	{
-		#ifndef MLG_MODE
+		#if !MLG_MODE
 			if( m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] <= 0 )
 			{
 				EMIT_SOUND( ENT( m_pPlayer->pev ), CHAN_WEAPON, "weapons/357_cock1.wav", 0.8, ATTN_NORM );
@@ -218,7 +218,7 @@ void CGauss::SecondaryAttack()
 
 		m_fPrimaryFire = FALSE;
 
-		#ifndef MLG_MODE
+		#if !MLG_MODE
 			m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]--;// take one ammo just to start the spin
 		#else
 			m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]++;// give one ammo just to start the spin
@@ -231,7 +231,7 @@ void CGauss::SecondaryAttack()
 		SendWeaponAnim( GAUSS_SPINUP );
 		m_fInAttack = 1;
 		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.5f;
-		#ifdef MLG_MODE
+		#if MLG_MODE
 			m_pPlayer->m_flStartCharge = gpGlobals->time-10;
 		#else
 			m_pPlayer->m_flStartCharge = gpGlobals->time;
@@ -243,14 +243,14 @@ void CGauss::SecondaryAttack()
 
 		m_iSoundState = SND_CHANGE_PITCH;
 	}
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		else if( m_fInAttack == 1 )
 	#else
 		if( true )
 	#endif
 	
 	{
-		#ifndef MLG_MODE
+		#if !MLG_MODE
 			if( m_flTimeWeaponIdle < UTIL_WeaponTimeBase() )
 		#else
 			if( true )
@@ -260,7 +260,7 @@ void CGauss::SecondaryAttack()
 			m_fInAttack = 2;
 		}
 	}
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		else
 	#else
 		if( true )
@@ -272,7 +272,7 @@ void CGauss::SecondaryAttack()
 		// This will need to be fixed further down the line by preventing negative ammo unless explicitly required (infinite ammo?),
 		// But this check will prevent the problem for now. - Solokiller
 		// TODO: investigate further.
-		#ifndef MLG_MODE
+		#if !MLG_MODE
 		if( m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] <= 0 )
                 {
                         // out of ammo! force the gun to fire
@@ -284,7 +284,7 @@ void CGauss::SecondaryAttack()
                 }
     #endif
 		// during the charging process, eat one bit of ammo every once in a while
-		#ifndef MLG_MODE
+		#if !MLG_MODE
 			if( UTIL_WeaponTimeBase() >= m_pPlayer->m_flNextAmmoBurn && m_pPlayer->m_flNextAmmoBurn != 1000 )
 		#else
 			if( true )
@@ -296,7 +296,7 @@ void CGauss::SecondaryAttack()
 			if( g_pGameRules->IsMultiplayer() )
 #endif
 			{
-				#ifndef MLG_MODE
+				#if !MLG_MODE
 					m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]--;
 				#else
 					m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]++;
@@ -305,7 +305,7 @@ void CGauss::SecondaryAttack()
 			}
 			else
 			{
-				#ifndef MLG_MODE
+				#if !MLG_MODE
 					m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]--;
 				#else
 					m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]++;
@@ -424,7 +424,7 @@ void CGauss::StartFire( void )
 			m_pPlayer->pev->velocity = m_pPlayer->pev->velocity - gpGlobals->v_forward * flDamage * 5.0f;
 		}
 
-		#ifndef MLG_MODE
+		#if !MLG_MODE
 			if( !g_pGameRules->IsMultiplayer() )
 			{
 				// in deathmatch, gauss can pop you up into the air. Not in single play.
@@ -639,7 +639,7 @@ void CGauss::WeaponIdle( void )
 		}
 		m_pPlayer->m_flPlayAftershock = 0.0f;
 	}
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		if( m_flTimeWeaponIdle > UTIL_WeaponTimeBase() )
 			return;
 	#endif
@@ -650,7 +650,7 @@ void CGauss::WeaponIdle( void )
 		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 2.0f;
 
 		// Need to set m_flNextPrimaryAttack so the weapon gets a chance to complete its secondary fire animation. - Solokiller
-		#ifndef MLG_MODE
+		#if !MLG_MODE
 		if( m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] <= 0 )
 			m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.5f;
 		#endif

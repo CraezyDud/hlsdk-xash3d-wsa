@@ -162,7 +162,7 @@ void CRoach::Killed( entvars_t *pevAttacker, int iGib )
 {
 	pev->solid = SOLID_NOT;
 	
-	#ifdef MLG_MODE
+	#if MLG_MODE
 		CGib::SpawnRandomGibs( pev, 5, 0 );
 	#endif
 	

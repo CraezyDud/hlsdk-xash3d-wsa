@@ -503,7 +503,7 @@ int CBaseEntity::TakeHealth( float flHealth, int bitsDamageType, int iJuice )
 
 	pev->health += flHealth;
 	
-	#ifdef SCREEN_DAMAGE
+	#if SCREEN_DAMAGE
 		if( iJuice > -1 )
 			UTIL_ScreenFade( this, Vector( 0, 255, 10 ), 0.5f, 0.5f, iJuice*2, FFADE_IN );
 		else

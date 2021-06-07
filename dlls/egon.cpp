@@ -127,7 +127,7 @@ int CEgon::GetItemInfo( ItemInfo *p )
 
 	return 1;
 }
-#ifndef MLG_MODE
+#if !MLG_MODE
 	#define EGON_PULSE_INTERVAL		0.1
 	#define EGON_DISCHARGE_INTERVAL		0.1
 #else
@@ -155,7 +155,7 @@ BOOL CEgon::HasAmmo( void )
 
 void CEgon::UseAmmo( int count )
 {
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		if( m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] >= count )
 			m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] -= count;
 		else
@@ -168,7 +168,7 @@ void CEgon::UseAmmo( int count )
 void CEgon::Attack( void )
 {
 	// don't fire underwater
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		if( m_pPlayer->pev->waterlevel == 3 )
 		{
 			if( m_fireState != FIRE_OFF || m_pBeam )
@@ -200,7 +200,7 @@ void CEgon::Attack( void )
 		{
 			if( !HasAmmo() )
 			{
-				#ifndef MLG_MODE
+				#if !MLG_MODE
 					m_flNextPrimaryAttack = m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.25f;
 					PlayEmptySound( );
 					return;
@@ -215,7 +215,7 @@ void CEgon::Attack( void )
 
 			m_pPlayer->m_iWeaponVolume = EGON_PRIMARY_VOLUME;
 			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.1f;
-			#ifndef MLG_MODE
+			#if !MLG_MODE
 				pev->fuser1 = UTIL_WeaponTimeBase() + 2.0f;
 			#else
 				pev->fuser1 = UTIL_WeaponTimeBase();
@@ -236,7 +236,7 @@ void CEgon::Attack( void )
 				pev->fuser1 = 1000;
 			}
 
-			#ifndef MLG_MODE
+			#if !MLG_MODE
 				if( !HasAmmo() )
 				{
 					EndAttack();
@@ -525,7 +525,7 @@ void CEgon::EndAttack( void )
 	PLAYBACK_EVENT_FULL( FEV_GLOBAL | FEV_RELIABLE, m_pPlayer->edict(), m_usEgonStop, 0.0f, m_pPlayer->pev->origin, m_pPlayer->pev->angles, 0.0f, 0.0f, bMakeNoise, 0, 0, 0 );
 
 	m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 2.0f;
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		m_flNextPrimaryAttack = m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5f;
 	#endif
 

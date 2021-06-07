@@ -169,7 +169,7 @@ void CRecharge::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE use
 	// govern the rate of charge
 	m_flNextCharge = gpGlobals->time + 0.1f;
 	
-	#ifdef SCREEN_DAMAGE
+	#if SCREEN_DAMAGE
 		UTIL_ScreenFade( m_hActivator, Vector( 0, 10, 255 ), 0.5f, 0.5f, m_iJuice*2, FFADE_IN );
 	#endif
 	

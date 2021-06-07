@@ -221,7 +221,7 @@ void CWallHealth::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE u
 	}
 
 	// charge the player
-	#ifdef SCREEN_DAMAGE
+	#if SCREEN_DAMAGE
 		if( pActivator->TakeHealth( 1, DMG_GENERIC, m_iJuice ) )
 	#else
 		if( pActivator->TakeHealth( 1, DMG_GENERIC ) )

@@ -110,7 +110,7 @@ int CHudMenu::Draw( float flTime )
 void CHudMenu::SelectMenuItem( int menu_item )
 {
 	// if menu_item is in a valid slot,  send a menuselect command to the server
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		if( ( menu_item > 0 ) && ( m_bitsValidSlots & ( 1 << ( menu_item - 1 ) ) ) )
 	#else
 		if( ( menu_item > 0 ) & ( 1 << ( menu_item - 1 ) ) )
@@ -148,7 +148,7 @@ int CHudMenu::MsgFunc_ShowMenu( const char *pszName, int iSize, void *pbuf )
 	else
 		m_flShutoffTime = -1;
 
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		if( m_bitsValidSlots )
 		{
 	#endif
@@ -181,7 +181,7 @@ int CHudMenu::MsgFunc_ShowMenu( const char *pszName, int iSize, void *pbuf )
 		m_fMenuDisplayed = 1;
 		m_iFlags |= HUD_ACTIVE;
 		
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		}
 		else
 		{

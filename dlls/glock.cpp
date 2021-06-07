@@ -116,7 +116,7 @@ void CGlock::PrimaryAttack( void )
 
 void CGlock::GlockFire( float flSpread, float flCycleTime, BOOL fUseAutoAim )
 {
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		if( m_iClip <= 0 )
 		{
 			if( m_fFireOnEmpty )
@@ -174,7 +174,7 @@ void CGlock::GlockFire( float flSpread, float flCycleTime, BOOL fUseAutoAim )
 
 	PLAYBACK_EVENT_FULL( flags, m_pPlayer->edict(), fUseAutoAim ? m_usFireGlock1 : m_usFireGlock2, 0.0, g_vecZero, g_vecZero, vecDir.x, vecDir.y, 0, 0, ( m_iClip == 0 ) ? 1 : 0, 0 );
 
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		m_flNextPrimaryAttack = m_flNextSecondaryAttack = GetNextAttackDelay( flCycleTime );
 	#endif
 
@@ -193,13 +193,13 @@ void CGlock::Reload( void )
 	int iResult;
 
 	if( m_iClip == 0 )
-		#ifdef LEAVE_AMMO_IN_CLIP
+		#if LEAVE_AMMO_IN_CLIP
 			iResult = DefaultReload( GLOCK_MAX_CLIP, GLOCK_RELOAD, 1.5f, 0, TRUE );
 		#else
 			iResult = DefaultReload( GLOCK_MAX_CLIP, GLOCK_RELOAD, 1.5f );
 		#endif
 	else
-		#ifdef LEAVE_AMMO_IN_CLIP
+		#if LEAVE_AMMO_IN_CLIP
 			iResult = DefaultReload( GLOCK_MAX_CLIP, GLOCK_RELOAD_NOT_EMPTY, 1.5f, 0, TRUE );
 		#else
 			iResult = DefaultReload( GLOCK_MAX_CLIP, GLOCK_RELOAD_NOT_EMPTY, 1.5f );

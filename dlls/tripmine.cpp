@@ -455,7 +455,7 @@ void CTripmine::PrimaryAttack( void )
 
 			CBaseEntity::Create( "monster_tripmine", tr.vecEndPos + tr.vecPlaneNormal * 8.0f, angles, m_pPlayer->edict() );
 
-			#ifndef MLG_MODE
+			#if !MLG_MODE
 				m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]--;
 			#else
 				m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]++;
@@ -481,7 +481,7 @@ void CTripmine::PrimaryAttack( void )
 
 	}*/
 
-	#ifndef MLG_MODE
+	#if !MLG_MODE
 		m_flNextPrimaryAttack = GetNextAttackDelay( 0.3 );
 	#endif
 	m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + UTIL_SharedRandomFloat( m_pPlayer->random_seed, 10, 15 );
