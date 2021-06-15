@@ -57,15 +57,19 @@ int WeaponsResource::CountAmmo( int iId )
 
 int WeaponsResource::HasAmmo( WEAPON *p )
 {
-	if( !p )
-		return FALSE;
+	#if !MLG_MODE
+		if( !p )
+			return FALSE;
 
-	// weapons with no max ammo can always be selected
-	if( p->iMax1 == -1 )
+		// weapons with no max ammo can always be selected
+		if( p->iMax1 == -1 )
+			return TRUE;
+
+		return ( p->iAmmoType == -1 ) || p->iClip > 0 || CountAmmo( p->iAmmoType ) 
+			|| CountAmmo( p->iAmmo2Type ) || ( p->iFlags & WEAPON_FLAGS_SELECTONEMPTY );
+	#else
 		return TRUE;
-
-	return ( p->iAmmoType == -1 ) || p->iClip > 0 || CountAmmo( p->iAmmoType ) 
-		|| CountAmmo( p->iAmmo2Type ) || ( p->iFlags & WEAPON_FLAGS_SELECTONEMPTY );
+	#endif
 }
 
 void WeaponsResource::LoadWeaponSprites( WEAPON *pWeapon )

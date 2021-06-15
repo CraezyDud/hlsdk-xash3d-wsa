@@ -139,7 +139,11 @@ void CHgun::PrimaryAttack()
 
 	m_flRechargeTime = gpGlobals->time + 0.5f;
 #endif
-	m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]--;
+	#if !MLG_MODE
+		m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]--;
+	#else
+		m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]++;
+	#endif
 	
 	m_pPlayer->m_iWeaponVolume = QUIET_GUN_VOLUME;
 	m_pPlayer->m_iWeaponFlash = DIM_GUN_FLASH;
@@ -155,12 +159,14 @@ void CHgun::PrimaryAttack()
 	// player "shoot" animation
 	m_pPlayer->SetAnimation( PLAYER_ATTACK1 );
 
-	m_flNextPrimaryAttack = m_flNextPrimaryAttack + 0.25f;
+	#if !MLG_MODE
+		m_flNextPrimaryAttack = m_flNextPrimaryAttack + 0.25f;
 
-	if( m_flNextPrimaryAttack < UTIL_WeaponTimeBase() )
-	{
-		m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.25f;
-	}
+		if( m_flNextPrimaryAttack < UTIL_WeaponTimeBase() )
+		{
+			m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.25f;
+		}
+	#endif
 
 	m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + UTIL_SharedRandomFloat( m_pPlayer->random_seed, 10, 15 );
 }
@@ -233,26 +239,42 @@ void CHgun::SecondaryAttack( void )
 #endif
 	PLAYBACK_EVENT_FULL( flags, m_pPlayer->edict(), m_usHornetFire, 0.0f, g_vecZero, g_vecZero, 0.0f, 0.0f, FIREMODE_FAST, 0, 0, 0 );
 
-	m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]--;
+	#if !MLG_MODE
+		m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]--;
+	#else
+		m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]++;
+	#endif
 	m_pPlayer->m_iWeaponVolume = NORMAL_GUN_VOLUME;
 	m_pPlayer->m_iWeaponFlash = DIM_GUN_FLASH;
 
 	// player "shoot" animation
 	m_pPlayer->SetAnimation( PLAYER_ATTACK1 );
 
-	m_flNextPrimaryAttack = m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.1f;
+	#if !MLG_MODE
+		m_flNextPrimaryAttack = m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.1f;
+	#endif
 	m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + UTIL_SharedRandomFloat( m_pPlayer->random_seed, 10.0f, 15.0f );
 }
 
 void CHgun::Reload( void )
 {
-	if( m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] >= HORNET_MAX_CARRY )
-		return;
+	#if !MLG_MODE
+		if( m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] >= HORNET_MAX_CARRY )
+			return;
+	#endif
 
-	while( m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] < HORNET_MAX_CARRY && m_flRechargeTime < gpGlobals->time )
+	#if !MLG_MODE
+		while( m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] < HORNET_MAX_CARRY && m_flRechargeTime < gpGlobals->time )
+	#else
+		while( m_flRechargeTime < gpGlobals->time )
+	#endif
 	{
 		m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]++;
-		m_flRechargeTime += 0.5f;
+		#if !MLG_MODE
+			m_flRechargeTime += 0.5f;
+		#else
+			m_flRechargeTime += 0.4f;
+		#endif
 	}
 }
 

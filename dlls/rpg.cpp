@@ -432,7 +432,11 @@ void CRpg::Holster( int skiplocal /* = 0 */ )
 
 void CRpg::PrimaryAttack()
 {
-	if( m_iClip )
+	#if !MLG_MODE
+		if( m_iClip )
+	#else
+		if( true )
+	#endif
 	{
 		m_pPlayer->m_iWeaponVolume = LOUD_GUN_VOLUME;
 		m_pPlayer->m_iWeaponFlash = BRIGHT_GUN_FLASH;
@@ -461,9 +465,13 @@ void CRpg::PrimaryAttack()
 #endif
 		PLAYBACK_EVENT( flags, m_pPlayer->edict(), m_usRpg );
 
-		m_iClip--; 
+		#if !MLG_MODE
+			m_iClip--; 
+			m_flNextPrimaryAttack = GetNextAttackDelay( 1.5f );
+		#else
+			m_iClip++;
+		#endif
 
-		m_flNextPrimaryAttack = GetNextAttackDelay( 1.5f );
 		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 1.5f;
 
 		ResetEmptySound();

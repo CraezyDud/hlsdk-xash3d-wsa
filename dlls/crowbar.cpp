@@ -213,7 +213,9 @@ int CCrowbar::Swing( int fFirst )
 		if( fFirst )
 		{
 			// miss
-			m_flNextPrimaryAttack = GetNextAttackDelay( 0.5 );
+			#if !MLG_MODE
+				m_flNextPrimaryAttack = GetNextAttackDelay( 0.5 );
+			#endif
 #if CROWBAR_IDLE_ANIM
 			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + UTIL_SharedRandomFloat( m_pPlayer->random_seed, 10, 15 );
 #endif
@@ -290,8 +292,10 @@ int CCrowbar::Swing( int fFirst )
 
 				if( !pEntity->IsAlive() )
 				{
-#if CROWBAR_FIX_RAPID_CROWBAR
-					m_flNextPrimaryAttack = GetNextAttackDelay(0.25);
+#if !MLG_MODE
+	#if CROWBAR_FIX_RAPID_CROWBAR
+						m_flNextPrimaryAttack = GetNextAttackDelay(0.25);
+	#endif
 #endif
 					return TRUE;
 				}
@@ -337,10 +341,12 @@ int CCrowbar::Swing( int fFirst )
 		SetThink( &CCrowbar::Smack );
 		pev->nextthink = gpGlobals->time + 0.2f;
 #endif
-#ifdef CROWBAR_DELAY_FIX
-		m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.25f;
-#else
-		m_flNextPrimaryAttack = GetNextAttackDelay( 0.25f );
+#if !MLG_MODE
+	#if CROWBAR_DELAY_FIX
+			m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.25f;
+	#else
+			m_flNextPrimaryAttack = GetNextAttackDelay( 0.25f );
+	#endif
 #endif
 	}
 #if CROWBAR_IDLE_ANIM

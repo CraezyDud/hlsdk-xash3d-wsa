@@ -108,7 +108,12 @@ def build(bld):
 	
 	if bld.env.LEAVE_AMMO_IN_CLIP:
 		defines += ['LEAVE_AMMO_IN_CLIP']
-
+			
+	if bld.env.MLG_MODE:
+		defines += ['MLG_MODE']
+		
+	if bld.env.SCREEN_DAMAGE:
+		defines += ['SCREEN_DAMAGE']
 	
 	libs = []
 	if bld.env.DEST_OS == 'win32':

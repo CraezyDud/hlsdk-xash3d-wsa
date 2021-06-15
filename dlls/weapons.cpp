@@ -610,7 +610,7 @@ void CBasePlayerWeapon::ItemPostFrame( void )
 	{
 		// complete the reload. 		
 		
-		#ifdef LEAVE_AMMO_IN_CLIP
+		#if LEAVE_AMMO_IN_CLIP
 			int j = 0;
 
 			if( (LeaveInChamberGL == TRUE) && (m_iClip<1) )
@@ -951,30 +951,32 @@ BOOL CBasePlayerWeapon::IsUseable( void )
 
 BOOL CBasePlayerWeapon::CanDeploy( void )
 {
-	BOOL bHasAmmo = 0;
+	#if !MLG_MODE
+		BOOL bHasAmmo = 0;
 
-	if( !pszAmmo1() )
-	{
-		// this weapon doesn't use ammo, can always deploy.
-		return TRUE;
-	}
+		if( !pszAmmo1() )
+		{
+			// this weapon doesn't use ammo, can always deploy.
+			return TRUE;
+		}
 
-	if( pszAmmo1() )
-	{
-		bHasAmmo |= ( m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] != 0 );
-	}
-	if( pszAmmo2() )
-	{
-		bHasAmmo |= ( m_pPlayer->m_rgAmmo[m_iSecondaryAmmoType] != 0 );
-	}
-	if( m_iClip > 0 )
-	{
-		bHasAmmo |= 1;
-	}
-	if( !bHasAmmo )
-	{
-		return FALSE;
-	}
+		if( pszAmmo1() )
+		{
+			bHasAmmo |= ( m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] != 0 );
+		}
+		if( pszAmmo2() )
+		{
+			bHasAmmo |= ( m_pPlayer->m_rgAmmo[m_iSecondaryAmmoType] != 0 );
+		}
+		if( m_iClip > 0 )
+		{
+			bHasAmmo |= 1;
+		}
+		if( !bHasAmmo )
+		{
+			return FALSE;
+		}
+	#endif
 
 	return TRUE;
 }
@@ -999,7 +1001,7 @@ BOOL CBasePlayerWeapon::DefaultDeploy( const char *szViewModel, const char *szWe
 
 BOOL CBasePlayerWeapon::DefaultReload( int iClipSize, int iAnim, float fDelay, int body, bool LeaveInChamber )
 {
-	#ifdef LEAVE_AMMO_IN_CLIP
+	#if LEAVE_AMMO_IN_CLIP
 		LeaveInChamberGL = LeaveInChamber;
 	#else
 		LeaveInChamber = FALSE;
@@ -1007,7 +1009,7 @@ BOOL CBasePlayerWeapon::DefaultReload( int iClipSize, int iAnim, float fDelay, i
 	if( m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] <= 0 )
 		return FALSE;
 	
-	#ifdef LEAVE_AMMO_IN_CLIP
+	#if LEAVE_AMMO_IN_CLIP
 		int j = 0;
 			
 		if( (LeaveInChamber == TRUE) && (m_iClip<1) )
@@ -1593,7 +1595,11 @@ BOOL CWeaponBox::IsEmpty( void )
 		}
 	}
 
-	return TRUE;
+	#if !MLG_MODE
+		return TRUE;
+	#else
+		return FALSE;
+	#endif
 }
 
 //=========================================================

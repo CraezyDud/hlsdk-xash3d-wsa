@@ -115,26 +115,34 @@ BOOL CShotgun::Deploy()
 
 void CShotgun::PrimaryAttack()
 {
-	// don't fire underwater
-	if( m_pPlayer->pev->waterlevel == 3 )
-	{
-		PlayEmptySound();
-		m_flNextPrimaryAttack = GetNextAttackDelay( 0.15f );
-		return;
-	}
-
-	if( m_iClip <= 0 )
-	{
-		Reload();
-		if( m_iClip == 0 )
+	#if !MLG_MODE
+		// don't fire underwater
+		if( m_pPlayer->pev->waterlevel == 3 )
+		{
 			PlayEmptySound();
-		return;
-	}
+			m_flNextPrimaryAttack = GetNextAttackDelay( 0.15f );
+			return;
+		}
+
+		if( m_iClip <= 0 )
+		{
+			Reload();
+			if( m_iClip == 0 )
+				PlayEmptySound();
+			return;
+		}
+	#endif
 
 	m_pPlayer->m_iWeaponVolume = LOUD_GUN_VOLUME;
 	m_pPlayer->m_iWeaponFlash = NORMAL_GUN_FLASH;
 
-	m_iClip--;
+	#if !MLG_MODE
+		m_iClip--;
+	#else
+		m_iClip++;
+		if( m_iClip > 128 )
+			m_iClip = -127;
+	#endif
 
 	int flags;
 #if CLIENT_WEAPONS
@@ -175,8 +183,10 @@ void CShotgun::PrimaryAttack()
 	//if( m_iClip != 0 )
 		m_flPumpTime = gpGlobals->time + 0.5f;
 
-	m_flNextPrimaryAttack = GetNextAttackDelay( 0.75f );
-	m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.75f;
+	#if !MLG_MODE
+		m_flNextPrimaryAttack = GetNextAttackDelay( 0.75f );
+		m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.75f;
+	#endif
 	if( m_iClip != 0 )
 		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 5.0f;
 	else
@@ -186,25 +196,33 @@ void CShotgun::PrimaryAttack()
 
 void CShotgun::SecondaryAttack( void )
 {
+	#if !MLG_MODE
 	// don't fire underwater
-	if( m_pPlayer->pev->waterlevel == 3 )
-	{
-		PlayEmptySound();
-		m_flNextPrimaryAttack = GetNextAttackDelay( 0.15f );
-		return;
-	}
+		if( m_pPlayer->pev->waterlevel == 3 )
+		{
+			PlayEmptySound();
+			m_flNextPrimaryAttack = GetNextAttackDelay( 0.15f );
+			return;
+		}
 
-	if( m_iClip <= 1 )
-	{
-		Reload();
-		PlayEmptySound();
-		return;
-	}
+		if( m_iClip <= 1 )
+		{
+			Reload();
+			PlayEmptySound();
+			return;
+		}
+	#endif
 
 	m_pPlayer->m_iWeaponVolume = LOUD_GUN_VOLUME;
 	m_pPlayer->m_iWeaponFlash = NORMAL_GUN_FLASH;
 
-	m_iClip -= 2;
+	#if !MLG_MODE
+		m_iClip -= 2;
+	#else
+		m_iClip += 2;
+		if( m_iClip > 128 )
+			m_iClip = -127;
+	#endif
 
 	int flags;
 #if CLIENT_WEAPONS
@@ -246,8 +264,10 @@ void CShotgun::SecondaryAttack( void )
 	//if( m_iClip != 0 )
 		m_flPumpTime = gpGlobals->time + 0.95f;
 
-	m_flNextPrimaryAttack = GetNextAttackDelay( 1.5f );
-	m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 1.5f;
+	#if !MLG_MODE
+		m_flNextPrimaryAttack = GetNextAttackDelay( 1.5f );
+		m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 1.5f;
+	#endif
 	if( m_iClip != 0 )
 		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 6.0f;
 	else
@@ -258,8 +278,10 @@ void CShotgun::SecondaryAttack( void )
 
 void CShotgun::Reload( void )
 {
-	if( m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] <= 0 || m_iClip == SHOTGUN_MAX_CLIP )
-		return;
+	#if !MLG_MODE
+		if( m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] <= 0 || m_iClip == SHOTGUN_MAX_CLIP )
+			return;
+	#endif
 
 	// don't reload until recoil is done
 	if( m_flNextPrimaryAttack > UTIL_WeaponTimeBase() )
@@ -270,10 +292,14 @@ void CShotgun::Reload( void )
 	{
 		SendWeaponAnim( SHOTGUN_START_RELOAD );
 		m_fInSpecialReload = 1;
-		m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.6f;
+		#if !MLG_MODE
+			m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.6f;
+		#endif
 		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.6f;
-		m_flNextPrimaryAttack = GetNextAttackDelay( 1.0f );
-		m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 1.0f;
+		#if !MLG_MODE
+			m_flNextPrimaryAttack = GetNextAttackDelay( 1.0f );
+			m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 1.0f;
+		#endif
 		return;
 	}
 	else if( m_fInSpecialReload == 1 )
@@ -290,14 +316,25 @@ void CShotgun::Reload( void )
 
 		SendWeaponAnim( SHOTGUN_RELOAD );
 
-		m_flNextReload = UTIL_WeaponTimeBase() + 0.5f;
-		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.5f;
+		#if !MLG_MODE
+			m_flNextReload = UTIL_WeaponTimeBase() + 0.5f;
+			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.5f;
+		#else
+			m_flNextReload = UTIL_WeaponTimeBase() + 0.05;
+			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.05f;
+		#endif
 	}
 	else
 	{
 		// Add them to the clip
 		m_iClip += 1;
-		m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] -= 1;
+		#if !MLG_MODE
+			m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] -= 1;
+		#else
+			m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] += 1;
+			if( m_iClip > 128 )
+			m_iClip = -127;
+		#endif
 		m_fInSpecialReload = 1;
 	}
 }

@@ -1,6 +1,12 @@
-# Half-Life SDK for Xash3D [![Build Status](https://github.com/FWGS/hlsdk-xash3d/actions/workflows/.github.yml/badge.svg?branch=master)](https://github.com/FWGS/hlsdk-xash3d/actions/workflows/.github.yml) [![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/FWGS/hlsdk-xash3d?svg=true)](https://ci.appveyor.com/project/a1batross/hlsdk-xash3d)
+# Half-Life SDK for Xash3D [![build](https://github.com/MrSwedish/hlsdk-xash3d-wsa/actions/workflows/.github.yml/badge.svg)](https://github.com/MrSwedish/hlsdk-xash3d-wsa/actions/workflows/.github.yml) [![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/MrSwedish/hlsdk-xash3d-wsa?svg=true)](https://ci.appveyor.com/project/MrSwedish/hlsdk-xash3d-wsa)
 
-Half-Life SDK for Xash3D & GoldSource with some fixes.
+Half-Life SDK for Xash3D & GoldSource with some more fixes and additions.
+
+[!!My changes are _only_ on the **master**, **bshift** and **opfor** branch!!]
+
+my changes fix the handgrenade throw and add that the bullet is left in the chamber when your ammo is above 0
+this is only for the glock, crossbow, desert eagle and the sniper rifle
+I don't know much about weapons, so i may have chosen an incorrect weapon, tell me if i am wrong about a weapon
 
 ## How to build
 
@@ -54,6 +60,22 @@ To use waf, you need to install python (2.7 minimum)
 
 Just typical `ndk-build`.
 TODO: describe what it is.
+
+### Building with my additions
+
+~~To enable building the goldsource compatible client library add GOLDSOURCE_SUPPORT flag when calling cmake:~~
+
+~~    ~~cmake .. -LEAVE-BULLET-IN-CHAMBER=ON -FIX-HANDGRENADE-THROW=ON~~
+
+^ not yet
+
+or when using waf:
+
+     ./waf configure -T release --leave-bullet-in-chamber --fix-handgrenade-throw --screen-damage
+
+\[to see more on waf do `./waf --help`\]
+
+### *(also try out --mlg-mode)*
 
 ### Building GoldSource-compatible libraries
 

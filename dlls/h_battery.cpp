@@ -28,6 +28,7 @@
 #include "gamerules.h"
 #include "weapons.h"
 #include "game.h"
+#include "shake.h" 
 
 class CRecharge : public CBaseToggle
 {
@@ -167,6 +168,11 @@ void CRecharge::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE use
 
 	// govern the rate of charge
 	m_flNextCharge = gpGlobals->time + 0.1f;
+	
+	#if SCREEN_DAMAGE
+		UTIL_ScreenFade( m_hActivator, Vector( 0, 10, 255 ), 0.5f, 0.5f, m_iJuice*2, FFADE_IN );
+	#endif
+	
 }
 
 void CRecharge::Recharge( void )
