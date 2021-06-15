@@ -12,7 +12,7 @@
 *   without written permission from Valve LLC.
 *
 ****/
-#if !defined( OEM_BUILD ) && !defined( HLDEMO_BUILD )
+#if !OEM_BUILD && !HLDEMO_BUILD
 
 #include "extdll.h"
 #include "util.h"
@@ -42,7 +42,7 @@ enum squeak_e
 	SQUEAK_THROW
 };
 
-#ifndef CLIENT_DLL
+#if !CLIENT_DLL
 class CSqueakGrenade : public CGrenade
 {
 	void Spawn( void );
@@ -505,7 +505,7 @@ void CSqueak::PrimaryAttack()
 		UTIL_TraceLine( trace_origin + gpGlobals->v_forward * 20.0f, trace_origin + gpGlobals->v_forward * 64.0f, dont_ignore_monsters, NULL, &tr );
 
 		int flags;
-#ifdef CLIENT_WEAPONS
+#if CLIENT_WEAPONS
 		flags = FEV_NOTHOST;
 #else
 		flags = 0;
@@ -516,7 +516,7 @@ void CSqueak::PrimaryAttack()
 		{
 			// player "shoot" animation
 			m_pPlayer->SetAnimation( PLAYER_ATTACK1 );
-#ifndef CLIENT_DLL
+#if !CLIENT_DLL
 			CBaseEntity *pSqueak = CBaseEntity::Create( "monster_snark", tr.vecEndPos, m_pPlayer->pev->v_angle, m_pPlayer->edict() );
 			pSqueak->pev->velocity = gpGlobals->v_forward * 200.0f + m_pPlayer->pev->velocity;
 #endif
@@ -530,11 +530,17 @@ void CSqueak::PrimaryAttack()
 
 			m_pPlayer->m_iWeaponVolume = QUIET_GUN_VOLUME;
 
-			m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]--;
+			#if !MLG_MODE
+				m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]--;
+			#else
+				m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]++;
+			#endif
 
 			m_fJustThrown = 1;
 
-			m_flNextPrimaryAttack = GetNextAttackDelay( 0.3f );
+			#if !MLG_MODE
+				m_flNextPrimaryAttack = GetNextAttackDelay( 0.3f );
+			#endif
 			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 1.0f;
 		}
 	}

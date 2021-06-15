@@ -10,15 +10,8 @@ def options(opt):
 	return
 
 def configure(conf):
-	if conf.env.COMPILER_CC == 'msvc':
-		# hl.def removes MSVC function name decoration from GiveFnptrsToDll on Windows.
-		# Without this, the lookup for this function fails.
-		hlDefNode = conf.path.find_resource("./hl.def")
-
-		if hlDefNode is not None:
-			conf.env.append_unique('LINKFLAGS', '/def:%s' % hlDefNode.abspath())
-		else:
-			conf.fatal("Could not find hl.def")
+	# stub
+	return
 
 def build(bld):
 	source = bld.path.parent.ant_glob([
@@ -200,6 +193,12 @@ def build(bld):
 	
 	if bld.env.LEAVE_AMMO_IN_CLIP:
 		defines += ['LEAVE_AMMO_IN_CLIP']
+			
+	if bld.env.MLG_MODE:
+		defines += ['MLG_MODE']
+		
+	if bld.env.SCREEN_DAMAGE:
+		defines += ['SCREEN_DAMAGE']
 
 	if bld.env.DEST_OS not in ['android', 'dos']:
 		install_path = os.path.join(bld.env.GAMEDIR, bld.env.SERVER_DIR)

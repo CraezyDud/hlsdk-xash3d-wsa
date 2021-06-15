@@ -12,7 +12,7 @@
 *   without written permission from Valve LLC.
 *
 ****/
-#if !defined( OEM_BUILD ) && !defined( HLDEMO_BUILD )
+#if !OEM_BUILD && !HLDEMO_BUILD
 
 #include "extdll.h"
 #include "util.h"
@@ -97,11 +97,15 @@ void CPython::Precache( void )
 
 BOOL CPython::Deploy()
 {
-#ifdef CLIENT_DLL
-	if( bIsMultiplayer() )
-#else
-	if( g_pGameRules->IsMultiplayer() )
-#endif
+	#if !MLG_MODE
+		#if CLIENT_DLL
+			if( bIsMultiplayer() )
+		#else
+			if( g_pGameRules->IsMultiplayer() )
+		#endif
+	#else
+		if( true )
+	#endif
 	{
 		// enable laser sight geometry.
 		pev->body = 1;
@@ -130,14 +134,16 @@ void CPython::Holster( int skiplocal /* = 0 */ )
 
 void CPython::SecondaryAttack( void )
 {
-#ifdef CLIENT_DLL
-	if( !bIsMultiplayer() )
-#else
-	if( !g_pGameRules->IsMultiplayer() )
-#endif
-	{
-		return;
-	}
+	#if !MLG_MODE
+		#if CLIENT_DLL
+			if( !bIsMultiplayer() )
+		#else
+			if( !g_pGameRules->IsMultiplayer() )
+		#endif
+		{
+				return;
+		}
+	#endif
 
 	if( m_pPlayer->pev->fov != 0 )
 	{
@@ -155,31 +161,37 @@ void CPython::SecondaryAttack( void )
 
 void CPython::PrimaryAttack()
 {
-	// don't fire underwater
-	if( m_pPlayer->pev->waterlevel == 3 )
-	{
-		PlayEmptySound();
-		m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.15f;
-		return;
-	}
-
-	if( m_iClip <= 0 )
-	{
-		if( !m_fFireOnEmpty )
-			Reload();
-		else
+	#if !MLG_MODE
+		// don't fire underwater
+		if( m_pPlayer->pev->waterlevel == 3 )
 		{
 			PlayEmptySound();
 			m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.15f;
+			return;
 		}
 
-		return;
-	}
+		if( m_iClip <= 0 )
+		{
+			if( !m_fFireOnEmpty )
+				Reload();
+			else
+			{
+				PlayEmptySound();
+				m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.15f;
+			}
+
+			return;
+		}
+	#endif
 
 	m_pPlayer->m_iWeaponVolume = LOUD_GUN_VOLUME;
 	m_pPlayer->m_iWeaponFlash = BRIGHT_GUN_FLASH;
 
-	m_iClip--;
+	#if !MLG_MODE
+		m_iClip--;
+	#else
+		m_iClip++;
+	#endif
 
 	m_pPlayer->pev->effects = (int)( m_pPlayer->pev->effects ) | EF_MUZZLEFLASH;
 
@@ -195,7 +207,7 @@ void CPython::PrimaryAttack()
 	vecDir = m_pPlayer->FireBulletsPlayer( 1, vecSrc, vecAiming, VECTOR_CONE_1DEGREES, 8192, BULLET_PLAYER_357, 0, 0, m_pPlayer->pev, m_pPlayer->random_seed );
 
 	int flags;
-#if defined( CLIENT_WEAPONS )
+#if CLIENT_WEAPONS
 	flags = FEV_NOTHOST;
 #else
 	flags = 0;
@@ -206,7 +218,9 @@ void CPython::PrimaryAttack()
 		// HEV suit - indicate out of ammo condition
 		m_pPlayer->SetSuitUpdate( "!HEV_AMO0", FALSE, 0 );
 
-	m_flNextPrimaryAttack = 0.75f;
+	#if !MLG_MODE
+		m_flNextPrimaryAttack = 0.75f;
+	#endif
 	m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + UTIL_SharedRandomFloat( m_pPlayer->random_seed, 10.0f, 15.0f );
 }
 
@@ -222,7 +236,7 @@ void CPython::Reload( void )
 	}
 
 	int bUseScope = FALSE;
-#ifdef CLIENT_DLL
+#if CLIENT_DLL
 	bUseScope = bIsMultiplayer();
 #else
 	bUseScope = g_pGameRules->IsMultiplayer();
@@ -273,7 +287,7 @@ void CPython::WeaponIdle( void )
 	}
 	
 	int bUseScope = FALSE;
-#ifdef CLIENT_DLL
+#if CLIENT_DLL
 	bUseScope = bIsMultiplayer();
 #else
 	bUseScope = g_pGameRules->IsMultiplayer();

@@ -465,9 +465,18 @@ int CBasePlayer::TakeDamage( entvars_t *pevInflictor, entvars_t *pevAttacker, fl
 		flBonus *= 2;
 	}
 
+	#if SCREEN_DAMAGE
+		UTIL_ScreenFade( this, Vector( 255, 0, 0 ), flDamage/5, 0.5f, flDamage*3, FFADE_IN );
+	#endif
+	
 	// Already dead
 	if( !IsAlive() )
+		{
+		#if SCREEN_DAMAGE
+			UTIL_ScreenFade( this, Vector( 255, 0, 0 ), flDamage/2, 0.5f, flDamage*5, FFADE_IN );
+		#endif
 		return 0;
+		}
 
 	// go take the damage first
 	CBaseEntity *pAttacker = CBaseEntity::Instance( pevAttacker );
@@ -554,6 +563,9 @@ int CBasePlayer::TakeDamage( entvars_t *pevInflictor, entvars_t *pevAttacker, fl
 				SetSuitUpdate( "!HEV_DMG4", FALSE, SUIT_NEXT_IN_30SEC );	// minor fracture
 			bitsDamage &= ~DMG_CLUB;
 			ffound = TRUE;
+			#if SCREEN_DAMAGE
+				UTIL_ScreenFade( this, Vector( 255, 0, 0 ), flDamage/5, 0.5f, flDamage*3, FFADE_IN );
+			#endif
 		}
 		if( bitsDamage & ( DMG_FALL | DMG_CRUSH ) )
 		{
@@ -564,6 +576,9 @@ int CBasePlayer::TakeDamage( entvars_t *pevInflictor, entvars_t *pevAttacker, fl
 
 			bitsDamage &= ~( DMG_FALL | DMG_CRUSH );
 			ffound = TRUE;
+			#if SCREEN_DAMAGE
+				UTIL_ScreenFade( this, Vector( 255, 10, 10 ), flDamage/5, 0.5f, flDamage*3, FFADE_IN );
+			#endif
 		}
 
 		if( bitsDamage & DMG_BULLET )
@@ -575,6 +590,9 @@ int CBasePlayer::TakeDamage( entvars_t *pevInflictor, entvars_t *pevAttacker, fl
 
 			bitsDamage &= ~DMG_BULLET;
 			ffound = TRUE;
+			#if SCREEN_DAMAGE
+				UTIL_ScreenFade( this, Vector( 255, 0, 0 ), flDamage/5, 0.5f, flDamage*3, FFADE_IN );
+			#endif
 		}
 
 		if( bitsDamage & DMG_SLASH )
@@ -586,6 +604,9 @@ int CBasePlayer::TakeDamage( entvars_t *pevInflictor, entvars_t *pevAttacker, fl
 
 			bitsDamage &= ~DMG_SLASH;
 			ffound = TRUE;
+			#if SCREEN_DAMAGE
+				UTIL_ScreenFade( this, Vector( 255, 0, 50 ), flDamage/5, 0.5f, flDamage*3, FFADE_IN );
+			#endif
 		}
 
 		if( bitsDamage & DMG_SONIC )
@@ -594,6 +615,9 @@ int CBasePlayer::TakeDamage( entvars_t *pevInflictor, entvars_t *pevAttacker, fl
 				SetSuitUpdate( "!HEV_DMG2", FALSE, SUIT_NEXT_IN_1MIN );	// internal bleeding
 			bitsDamage &= ~DMG_SONIC;
 			ffound = TRUE;
+			#if SCREEN_DAMAGE
+				UTIL_ScreenFade( this, Vector( 100, 255, 255 ), flDamage/5, 0.5f, flDamage*3, FFADE_IN );
+			#endif
 		}
 
 		if( bitsDamage & ( DMG_POISON | DMG_PARALYZE ) )
@@ -601,6 +625,9 @@ int CBasePlayer::TakeDamage( entvars_t *pevInflictor, entvars_t *pevAttacker, fl
 			SetSuitUpdate( "!HEV_DMG3", FALSE, SUIT_NEXT_IN_1MIN );	// blood toxins detected
 			bitsDamage &= ~( DMG_POISON | DMG_PARALYZE );
 			ffound = TRUE;
+			#if SCREEN_DAMAGE
+				UTIL_ScreenFade( this, Vector( 50, 255, 0 ), flDamage/5, 0.5f, flDamage*3, FFADE_IN );
+			#endif
 		}
 
 		if( bitsDamage & DMG_ACID )
@@ -608,6 +635,9 @@ int CBasePlayer::TakeDamage( entvars_t *pevInflictor, entvars_t *pevAttacker, fl
 			SetSuitUpdate( "!HEV_DET1", FALSE, SUIT_NEXT_IN_1MIN );	// hazardous chemicals detected
 			bitsDamage &= ~DMG_ACID;
 			ffound = TRUE;
+			#if SCREEN_DAMAGE
+				UTIL_ScreenFade( this, Vector( 25, 255, 0 ), flDamage/5, 0.5f, flDamage*3, FFADE_IN );
+			#endif
 		}
 
 		if( bitsDamage & DMG_NERVEGAS )
@@ -615,6 +645,9 @@ int CBasePlayer::TakeDamage( entvars_t *pevInflictor, entvars_t *pevAttacker, fl
 			SetSuitUpdate( "!HEV_DET0", FALSE, SUIT_NEXT_IN_1MIN );	// biohazard detected
 			bitsDamage &= ~DMG_NERVEGAS;
 			ffound = TRUE;
+			#if SCREEN_DAMAGE
+				UTIL_ScreenFade( this, Vector( 255, 100, 255 ), flDamage/5, 0.5f, flDamage*3, FFADE_IN );
+			#endif
 		}
 
 		if( bitsDamage & DMG_RADIATION )
@@ -622,11 +655,17 @@ int CBasePlayer::TakeDamage( entvars_t *pevInflictor, entvars_t *pevAttacker, fl
 			SetSuitUpdate( "!HEV_DET2", FALSE, SUIT_NEXT_IN_1MIN );	// radiation detected
 			bitsDamage &= ~DMG_RADIATION;
 			ffound = TRUE;
+			#if SCREEN_DAMAGE
+				UTIL_ScreenFade( this, Vector( 25, 255, 25 ), flDamage/5, 0.5f, flDamage*3, FFADE_IN );
+			#endif
 		}
 		if( bitsDamage & DMG_SHOCK )
 		{
 			bitsDamage &= ~DMG_SHOCK;
 			ffound = TRUE;
+			#if SCREEN_DAMAGE
+				UTIL_ScreenFade( this, Vector( 0, 10, 255 ), flDamage/5, 0.5f, flDamage*3, FFADE_IN );
+			#endif
 		}
 	}
 
@@ -2758,7 +2797,7 @@ pt_end:
 	// Track button info so we can detect 'pressed' and 'released' buttons next frame
 	m_afButtonLast = pev->button;
 
-#if defined( CLIENT_WEAPONS )
+#if CLIENT_WEAPONS
 	// Decay timers on weapons
 	// go through all of the weapons and make a list of the ones to pack
 	for( int i = 0; i < MAX_ITEM_TYPES; i++ )
@@ -3202,7 +3241,7 @@ int CBasePlayer::Restore( CRestore &restore )
 
 	RenewItems();
 
-#if defined( CLIENT_WEAPONS )
+#if CLIENT_WEAPONS
 	// HACK:	This variable is saved/restored in CBaseMonster as a time variable, but we're using it
 	//			as just a counter.  Ideally, this needs its own variable that's saved as a plain float.
 	//			Barring that, we clear it out here instead of using the incorrect restored time value.
@@ -3647,7 +3686,7 @@ void CBasePlayer::ImpulseCommands()
 //=========================================================
 void CBasePlayer::CheatImpulseCommands( int iImpulse )
 {
-#if !defined( HLDEMO_BUILD )
+#if !HLDEMO_BUILD
 	if( g_flWeaponCheat == 0.0f )
 	{
 		return;
@@ -3684,7 +3723,7 @@ void CBasePlayer::CheatImpulseCommands( int iImpulse )
 		GiveNamedItem( "ammo_ARgrenades" );
 		GiveNamedItem( "weapon_handgrenade" );
 		GiveNamedItem( "weapon_tripmine" );
-#ifndef OEM_BUILD
+#if !OEM_BUILD
 		GiveNamedItem( "weapon_357" );
 		GiveNamedItem( "ammo_357" );
 		GiveNamedItem( "weapon_crossbow" );
@@ -3983,7 +4022,7 @@ Called every frame by the player PreThink
 */
 void CBasePlayer::ItemPreFrame()
 {
-#if defined( CLIENT_WEAPONS )
+#if CLIENT_WEAPONS
 	if( m_flNextAttack > 0 )
 #else
 	if( gpGlobals->time < m_flNextAttack )
@@ -4013,7 +4052,7 @@ void CBasePlayer::ItemPostFrame()
 	if( m_pTank != 0 )
 		return;
 
-#if defined( CLIENT_WEAPONS )
+#if CLIENT_WEAPONS
 	if( m_flNextAttack > 0 )
 #else
 	if( gpGlobals->time < m_flNextAttack )

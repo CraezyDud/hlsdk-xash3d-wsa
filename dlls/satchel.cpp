@@ -12,7 +12,7 @@
 *   without written permission from Valve LLC.
 *
 ****/
-#if !defined( OEM_BUILD ) && !defined( HLDEMO_BUILD )
+#if !OEM_BUILD && !HLDEMO_BUILD
 
 #include "extdll.h"
 #include "util.h"
@@ -193,7 +193,7 @@ int CSatchel::AddDuplicate( CBasePlayerItem *pOriginal )
 {
 	CSatchel *pSatchel;
 
-#ifdef CLIENT_DLL
+#if CLIENT_DLL
 	if( bIsMultiplayer() )
 #else
 	if( g_pGameRules->IsMultiplayer() )
@@ -353,9 +353,15 @@ void CSatchel::PrimaryAttack()
 			}
 
 			m_chargeReady = SATCHEL_RELOAD;
-			m_flNextPrimaryAttack = GetNextAttackDelay( 0.5f );
-			m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5f;
-			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.5f;
+			#if !MLG_MODE
+				m_flNextPrimaryAttack = GetNextAttackDelay( 0.5f );
+				m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5f;
+				m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.5f;
+			#else
+				m_flNextPrimaryAttack = GetNextAttackDelay( 0.05f );
+				m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.05f;
+				m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.05f;
+			#endif
 			break;
 		}
 	case SATCHEL_RELOAD:
@@ -376,7 +382,7 @@ void CSatchel::Throw( void )
 {
 	if( m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] )
 	{
-#ifndef CLIENT_DLL
+#if !CLIENT_DLL
 		Vector vecSrc = m_pPlayer->pev->origin;
 
 		Vector vecThrow = gpGlobals->v_forward * 274 + m_pPlayer->pev->velocity;
@@ -398,10 +404,19 @@ void CSatchel::Throw( void )
 
 		m_chargeReady = SATCHEL_READY;
 
-		m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]--;
+		#if !MLG_MODE
+			m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]--;
+		#else
+			m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]++;
+		#endif
 
-		m_flNextPrimaryAttack = GetNextAttackDelay( 1.0f );
-		m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5f;
+		#if !MLG_MODE
+			m_flNextPrimaryAttack = GetNextAttackDelay( 1.0f );
+			m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5f;
+		#else
+			m_flNextPrimaryAttack = GetNextAttackDelay( 0.05f );
+			m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.05f;
+		#endif
 	}
 }
 
@@ -430,7 +445,7 @@ void CSatchel::WeaponIdle( void )
 			return;
 		}
 
-#ifndef CLIENT_DLL
+#if !CLIENT_DLL
 		m_pPlayer->pev->viewmodel = MAKE_STRING( "models/v_satchel.mdl" );
 		m_pPlayer->pev->weaponmodel = MAKE_STRING( "models/p_satchel.mdl" );
 #else
@@ -440,13 +455,20 @@ void CSatchel::WeaponIdle( void )
 
 		// use tripmine animations
 		strcpy( m_pPlayer->m_szAnimExtention, "trip" );
-
-		m_flNextPrimaryAttack = GetNextAttackDelay( 0.5f );
-		m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5f;
+		
+		#if !MLG_MODE
+			m_flNextPrimaryAttack = GetNextAttackDelay( 0.5f );
+			m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5f;
+		#else
+			m_flNextPrimaryAttack = GetNextAttackDelay( 0.05f );
+			m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.05f;
+		#endif
 		m_chargeReady = SATCHEL_IDLE;
 		break;
 	}
-	m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + UTIL_SharedRandomFloat( m_pPlayer->random_seed, 10, 15 );// how long till we do this again.
+	#if !MLG_MODE
+		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + UTIL_SharedRandomFloat( m_pPlayer->random_seed, 10, 15 );// how long till we do this again.
+	#endif
 }
 
 //=========================================================

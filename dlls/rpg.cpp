@@ -12,7 +12,7 @@
 *   without written permission from Valve LLC.
 *
 ****/
-#if !defined( OEM_BUILD )
+#if !OEM_BUILD
 
 #include "extdll.h"
 #include "util.h"
@@ -39,7 +39,7 @@ enum rpg_e
 
 LINK_ENTITY_TO_CLASS( weapon_rpg, CRpg )
 
-#ifndef CLIENT_DLL
+#if !CLIENT_DLL
 
 LINK_ENTITY_TO_CLASS( laser_spot, CLaserSpot )
 
@@ -306,7 +306,7 @@ void CRpg::Reload( void )
 		return;
 	}
 
-#ifndef CLIENT_DLL
+#if !CLIENT_DLL
 	if( m_pSpot && m_fSpotActive )
 	{
 		m_pSpot->Suspend( 2.1f );
@@ -329,7 +329,7 @@ void CRpg::Spawn()
 	SET_MODEL( ENT( pev ), "models/w_rpg.mdl" );
 	m_fSpotActive = 1;
 
-#ifdef CLIENT_DLL
+#if CLIENT_DLL
 	if( bIsMultiplayer() )
 #else
 	if( g_pGameRules->IsMultiplayer() )
@@ -421,7 +421,7 @@ void CRpg::Holster( int skiplocal /* = 0 */ )
 
 	SendWeaponAnim( RPG_HOLSTER1 );
 
-#ifndef CLIENT_DLL
+#if !CLIENT_DLL
 	if( m_pSpot )
 	{
 		m_pSpot->Killed( NULL, GIB_NEVER );
@@ -432,12 +432,16 @@ void CRpg::Holster( int skiplocal /* = 0 */ )
 
 void CRpg::PrimaryAttack()
 {
-	if( m_iClip )
+	#if !MLG_MODE
+		if( m_iClip )
+	#else
+		if( true )
+	#endif
 	{
 		m_pPlayer->m_iWeaponVolume = LOUD_GUN_VOLUME;
 		m_pPlayer->m_iWeaponFlash = BRIGHT_GUN_FLASH;
 
-#ifndef CLIENT_DLL
+#if !CLIENT_DLL
 		// player "shoot" animation
 		m_pPlayer->SetAnimation( PLAYER_ATTACK1 );
 
@@ -454,16 +458,20 @@ void CRpg::PrimaryAttack()
 		// Ken signed up for this as a global change (sjb)
 
 		int flags;
-#if defined( CLIENT_WEAPONS )
+#if CLIENT_WEAPONS
 	flags = FEV_NOTHOST;
 #else
 	flags = 0;
 #endif
 		PLAYBACK_EVENT( flags, m_pPlayer->edict(), m_usRpg );
 
-		m_iClip--; 
+		#if !MLG_MODE
+			m_iClip--; 
+			m_flNextPrimaryAttack = GetNextAttackDelay( 1.5f );
+		#else
+			m_iClip++;
+		#endif
 
-		m_flNextPrimaryAttack = GetNextAttackDelay( 1.5f );
 		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 1.5f;
 
 		ResetEmptySound();
@@ -480,7 +488,7 @@ void CRpg::SecondaryAttack()
 {
 	m_fSpotActive = !m_fSpotActive;
 
-#ifndef CLIENT_DLL
+#if !CLIENT_DLL
 	if( !m_fSpotActive && m_pSpot )
 	{
 		m_pSpot->Killed( NULL, GIB_NORMAL );
@@ -532,7 +540,7 @@ void CRpg::WeaponIdle( void )
 
 void CRpg::UpdateSpot( void )
 {
-#ifndef CLIENT_DLL
+#if !CLIENT_DLL
 	if( m_fSpotActive )
 	{
 		if (m_pPlayer->pev->viewmodel == 0)
@@ -571,7 +579,7 @@ class CRpgAmmo : public CBasePlayerAmmo
 	BOOL AddAmmo( CBaseEntity *pOther ) 
 	{ 
 		int iGive;
-#ifdef CLIENT_DLL
+#if CLIENT_DLL
 	if( bIsMultiplayer() )
 #else
 	if( g_pGameRules->IsMultiplayer() )

@@ -45,13 +45,19 @@ def options(opt):
 
 	grp.add_option('--enable-simple-mod-hacks', action = 'store_true', dest = 'ENABLE_MOD_HACKS', default = False,
 		help = 'enable hacks for simple mods that mostly compatible with Half-Life but has little changes. Enforced for Android. [default: %default]')
-		
+	
 	grp.add_option('--leave-bullet-in-chamber', action = 'store_true', dest = 'LEAVE_AMMO_IN_CLIP', default = False,
 		help = 'keep ammunition in the chamber on crossbow and handgun if ammunition is above 1. (probably multiplayer incompatible with people that don\'t have this) [default: %default]')
 		
 	grp.add_option('--fix-handgrenade-throw', action = 'store_true', dest = 'FIX_HANDGRENADE_THROW', default = False,
 		help = 'Fixes the \'if\' that is supposed to activate after a grenade throw, animation is not restored on false. (probably multiplayer incompatible with people that don\'t have this) [default: %default]')
-		
+	
+	grp.add_option('--mlg-mode', action = 'store_true', dest = 'MLG_MODE', default = False,
+		help = 'limitless ammunition and no fire delays, just crazy. [default: %default]')
+	
+	grp.add_option('--screen-damage', action = 'store_true', dest = 'SCREEN_DAMAGE', default = False,
+		help = 'show damage and heal by tinting the screen. [default: %default]')
+	
 	opt.load('subproject')
 
 	opt.add_subproject(['cl_dll', 'dlls'])
@@ -89,8 +95,10 @@ def configure(conf):
 
 	conf.env.VOICEMGR    = conf.options.VOICEMGR
 	conf.env.GOLDSRC     = conf.options.GOLDSRC
-	conf.env.LEAVE_AMMO_IN_CLIP  = conf.options.LEAVE_AMMO_IN_CLIP
-	conf.env.FIX_HANDGRENADE_THROW  = conf.options.FIX_HANDGRENADE_THROW
+	conf.env.LEAVE_AMMO_IN_CLIP   = conf.options.LEAVE_AMMO_IN_CLIP
+	conf.env.FIX_HANDGRENADE_THROW   = conf.options.FIX_HANDGRENADE_THROW
+	conf.env.MLG_MODE   = conf.options.MLG_MODE
+	conf.env.SCREEN_DAMAGE = conf.options.SCREEN_DAMAGE
 
 	# Force XP compability, all build targets should add
 	# subsystem=bld.env.MSVC_SUBSYSTEM
@@ -264,8 +272,8 @@ def configure(conf):
 	conf.define_cond('HAVE_CMATH', cmath_usable)
 
 	if conf.env.COMPILER_CC == 'msvc':
-		conf.define('_CRT_SECURE_NO_WARNINGS', 1)
-		conf.define('_CRT_NONSTDC_NO_DEPRECATE', 1)
+		conf.define('_CRT_SECURE_NO_WARNINGS', True)
+		conf.define('_CRT_NONSTDC_NO_DEPRECATE', True)
 	elif conf.env.COMPILER_CC == 'owcc':
 		pass
 	else:
@@ -279,14 +287,14 @@ def configure(conf):
 		if conf.env.cxxshlib_PATTERN.startswith('lib'):
 			conf.env.cxxshlib_PATTERN = conf.env.cxxshlib_PATTERN[3:]
 
-	conf.define('CLIENT_WEAPONS', '1')
+	conf.define('BARNACLE_FIX_VISIBILITY', False)
+	conf.define('CLIENT_WEAPONS', True)
 	conf.define('CROWBAR_IDLE_ANIM', False)
 	conf.define('CROWBAR_DELAY_FIX', False)
 	conf.define('CROWBAR_FIX_RAPID_CROWBAR', False)
 	conf.define('GAUSS_OVERCHARGE_FIX', False)
-
-	if conf.env.DEST_OS == 'android' or conf.options.ENABLE_MOD_HACKS:
-		conf.define('MOBILE_HACKS', '1')
+	conf.define('OEM_BUILD', False)
+	conf.define('HLDEMO_BUILD', False)
 
 	conf.add_subproject(["cl_dll", "dlls"])
 

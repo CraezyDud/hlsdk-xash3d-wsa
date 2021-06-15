@@ -43,7 +43,7 @@ void CHandGrenade::Spawn()
 	m_iId = WEAPON_HANDGRENADE;
 	SET_MODEL( ENT( pev ), "models/w_grenade.mdl" );
 
-#ifndef CLIENT_DLL
+#if !CLIENT_DLL
 	pev->dmg = gSkillData.plrDmgHandGrenade;
 #endif
 	m_iDefaultAmmo = HANDGRENADE_DEFAULT_GIVE;
@@ -75,8 +75,15 @@ int CHandGrenade::GetItemInfo( ItemInfo *p )
 	return 1;
 }
 
+#if MLG_MODE
+	bool Threw = FALSE;
+#endif
+
 BOOL CHandGrenade::Deploy()
 {
+	#if MLG_MODE
+		Threw = FALSE;
+	#endif
 	m_flReleaseThrow = -1;
 	return DefaultDeploy( "models/v_grenade.mdl", "models/p_grenade.mdl", HANDGRENADE_DRAW, "crowbar" );
 }
@@ -113,13 +120,20 @@ void CHandGrenade::Holster( int skiplocal /* = 0 */ )
 
 void CHandGrenade::PrimaryAttack()
 {
-	if( !m_flStartThrow && m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] > 0 )
+	#if !MLG_MODE
+		if( !m_flStartThrow && m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] > 0 )
+	#else
+		if( true )
+	#endif
 	{
 		m_flStartThrow = gpGlobals->time;
 		m_flReleaseThrow = 0.0f;
 
 		SendWeaponAnim( HANDGRENADE_PINPULL );
 		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.5f;
+		#if MLG_MODE
+			ThrowGrenadeHere();
+		#endif
 	}
 }
 
@@ -127,12 +141,63 @@ void CHandGrenade::WeaponIdle( void )
 {
 	if( m_flReleaseThrow == 0.0f && m_flStartThrow )
 		 m_flReleaseThrow = gpGlobals->time;
+		
+		if( m_flTimeWeaponIdle > UTIL_WeaponTimeBase() )
+			return;
 
-	if( m_flTimeWeaponIdle > UTIL_WeaponTimeBase() )
-		return;
-
-	if( m_flStartThrow )
+	#if !MLG_MODE
+		if( m_flStartThrow )
+		{
+			ThrowGrenadeHere();
+			return;
+		}
+		else if( m_flReleaseThrow > 0.0f )
+	#else
+		if( Threw == TRUE )
+	#endif
 	{
+		#if MLG_MODE
+			Threw = FALSE;
+		#endif
+		// we've finished the throw, restart.
+		m_flStartThrow = 0.0f;
+
+		if( m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] )
+		{
+			SendWeaponAnim( HANDGRENADE_DRAW );
+		}
+		else
+		{
+			RetireWeapon();
+			return;
+		}
+
+		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + UTIL_SharedRandomFloat( m_pPlayer->random_seed, 10.0f, 15.0f );
+		m_flReleaseThrow = -1.0f;
+		return;
+	}
+
+	if( m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] )
+	{
+		int iAnim;
+		float flRand = UTIL_SharedRandomFloat( m_pPlayer->random_seed, 0.0f, 1.0f );
+		if( flRand <= 0.75f )
+		{
+			iAnim = HANDGRENADE_IDLE;
+			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + UTIL_SharedRandomFloat( m_pPlayer->random_seed, 10.0f, 15.0f );// how long till we do this again.
+		}
+		else
+		{
+			iAnim = HANDGRENADE_FIDGET;
+			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 75.0f / 30.0f;
+		}
+
+		SendWeaponAnim( iAnim );
+	}
+}
+
+void CHandGrenade::ThrowGrenadeHere( void )
+{
 		Vector angThrow = m_pPlayer->pev->v_angle + m_pPlayer->pev->punchangle;
 
 		if( angThrow.x < 0.0f )
@@ -177,55 +242,28 @@ void CHandGrenade::WeaponIdle( void )
 			m_flReleaseThrow = 0.0f;
 		#endif
 		m_flStartThrow = 0.0f;
-		m_flNextPrimaryAttack = GetNextAttackDelay( 0.5f );
-		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.5f;
+		#if !MLG_MODE
+			m_flNextPrimaryAttack = GetNextAttackDelay( 0.5f );
+			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.5f;
+		#endif
 
-		m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]--;
+		#if !MLG_MODE
+			m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]--;
+		#else
+			m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]++;
+		#endif
 
-		if( !m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] )
-		{
-			// just threw last grenade
-			// set attack times in the future, and weapon idle in the future so we can see the whole throw
-			// animation, weapon idle will automatically retire the weapon for us.
-			m_flTimeWeaponIdle = m_flNextSecondaryAttack = m_flNextPrimaryAttack = GetNextAttackDelay( 0.5f );// ensure that the animation can finish playing
-		}
+		#if !MLG_MODE
+			if( !m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] )
+			{
+				// just threw last grenade
+				// set attack times in the future, and weapon idle in the future so we can see the whole throw
+				// animation, weapon idle will automatically retire the weapon for us.
+				m_flTimeWeaponIdle = m_flNextSecondaryAttack = m_flNextPrimaryAttack = GetNextAttackDelay( 0.5f );// ensure that the animation can finish playing
+			}
+		#endif
+		#if MLG_MODE
+			Threw = TRUE;
+		#endif
 		return;
-	}
-	else if( m_flReleaseThrow > 0.0f )
-	{
-		// we've finished the throw, restart.
-		m_flStartThrow = 0.0f;
-
-		if( m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] )
-		{
-			SendWeaponAnim( HANDGRENADE_DRAW );
-		}
-		else
-		{
-			RetireWeapon();
-			return;
-		}
-
-		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + UTIL_SharedRandomFloat( m_pPlayer->random_seed, 10.0f, 15.0f );
-		m_flReleaseThrow = -1.0f;
-		return;
-	}
-
-	if( m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] )
-	{
-		int iAnim;
-		float flRand = UTIL_SharedRandomFloat( m_pPlayer->random_seed, 0.0f, 1.0f );
-		if( flRand <= 0.75f )
-		{
-			iAnim = HANDGRENADE_IDLE;
-			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + UTIL_SharedRandomFloat( m_pPlayer->random_seed, 10.0f, 15.0f );// how long till we do this again.
-		}
-		else
-		{
-			iAnim = HANDGRENADE_FIDGET;
-			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 75.0f / 30.0f;
-		}
-
-		SendWeaponAnim( iAnim );
-	}
 }

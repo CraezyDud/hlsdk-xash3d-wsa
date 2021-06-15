@@ -42,7 +42,7 @@ ItemInfo CBasePlayerItem::ItemInfoArray[MAX_WEAPONS];
 void EMIT_SOUND_DYN( edict_t *entity, int channel, const char *sample, float volume, float attenuation, int flags, int pitch ) { }
 
 // CBaseEntity Stubs
-int CBaseEntity::TakeHealth( float flHealth, int bitsDamageType ) { return 1; }
+int CBaseEntity::TakeHealth( float flHealth, int bitsDamageType, int iJuice ) { return 1; }
 int CBaseEntity::TakeDamage( entvars_t *pevInflictor, entvars_t *pevAttacker, float flDamage, int bitsDamageType ) { return 1; }
 CBaseEntity *CBaseEntity::GetNextTarget( void ) { return NULL; }
 int CBaseEntity::Save( CSave &save ) { return 1; }
