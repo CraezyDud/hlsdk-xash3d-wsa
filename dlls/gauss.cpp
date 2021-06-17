@@ -358,9 +358,11 @@ void CGauss::SecondaryAttack()
 			if( overcharge )
 			{
 			// Player charged up too long. Zap him.
-#if GAUSS_OVERCHARGE_FIX
-			PLAYBACK_EVENT_FULL( FEV_NOTHOST, m_pPlayer->edict(), m_usGaussSpin, 0.0, g_vecZero, g_vecZero, 0.0, 0.0, pitch, 0, 0, 1 );
-#endif
+			#if !MLG_MODE
+	#if GAUSS_OVERCHARGE_FIX
+				PLAYBACK_EVENT_FULL( FEV_NOTHOST, m_pPlayer->edict(), m_usGaussSpin, 0.0, g_vecZero, g_vecZero, 0.0, 0.0, pitch, 0, 0, 1 );
+	#endif
+		#endif
 			EMIT_SOUND_DYN( ENT( m_pPlayer->pev ), CHAN_WEAPON, "weapons/electro4.wav", 1.0f, ATTN_NORM, 0, 80 + RANDOM_LONG( 0, 0x3f ) );
 			EMIT_SOUND_DYN( ENT( m_pPlayer->pev ), CHAN_ITEM, "weapons/electro6.wav", 1.0f, ATTN_NORM, 0, 75 + RANDOM_LONG( 0, 0x3f ) );
 
@@ -639,13 +641,13 @@ void CGauss::WeaponIdle( void )
 		}
 		m_pPlayer->m_flPlayAftershock = 0.0f;
 	}
-	#if !MLG_MODE
-		if( m_flTimeWeaponIdle > UTIL_WeaponTimeBase() )
-			return;
-	#endif
+	if( m_flTimeWeaponIdle > UTIL_WeaponTimeBase() )
+		return;
 	if( m_fInAttack != 0 )
 	{
-		StartFire();
+		#if !MLG_MODE
+			StartFire();
+		#endif
 		m_fInAttack = 0;
 		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 2.0f;
 
