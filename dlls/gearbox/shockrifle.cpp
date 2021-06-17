@@ -186,18 +186,16 @@ void CShockrifle::PrimaryAttack()
 
 	// player "shoot" animation
 	m_pPlayer->SetAnimation(PLAYER_ATTACK1);
+	#if !MLG_MODE
 #if CLIENT_DLL
 	if( bIsMultiplayer() )
 #else
 	if( g_pGameRules->IsMultiplayer() )
 #endif
-	{
-	#if !MLG_MODE
 		m_flNextPrimaryAttack = GetNextAttackDelay(0.1);
 	else
 		m_flNextPrimaryAttack = GetNextAttackDelay(0.2);
 	#endif
-	}
 
 	SetThink( &CShockrifle::ClearBeams );
 	pev->nextthink = gpGlobals->time + 0.08;
