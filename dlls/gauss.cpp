@@ -639,13 +639,13 @@ void CGauss::WeaponIdle( void )
 		}
 		m_pPlayer->m_flPlayAftershock = 0.0f;
 	}
-	#if !MLG_MODE
-		if( m_flTimeWeaponIdle > UTIL_WeaponTimeBase() )
-			return;
-	#endif
+	if( m_flTimeWeaponIdle > UTIL_WeaponTimeBase() )
+		return;
 	if( m_fInAttack != 0 )
 	{
-		StartFire();
+		#if !MLG_MODE
+			StartFire();
+		#endif
 		m_fInAttack = 0;
 		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 2.0f;
 
