@@ -102,7 +102,9 @@ void CEagle::SecondaryAttack()
 {
 	bool wasActive = m_fEagleLaserActive;
 	m_fEagleLaserActive = !m_fEagleLaserActive;
-	m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5;
+	#if !MLG_MODE
+		m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5;
+	#endif
 	if (wasActive)
 	{
 #if !CLIENT_DLL
@@ -123,25 +125,33 @@ void CEagle::PrimaryAttack()
 		if (m_fFireOnEmpty)
 		{
 			PlayEmptySound();
-			m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.2;
+			#if !MLG_MODE
+				m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.2;
+			#endif
 		}
 		return;
 	}
 
-	// don't fire underwater
-	if (m_pPlayer->pev->waterlevel == 3)
-	{
-		UpdateSpot( );
-		PlayEmptySound( );
-		m_flNextPrimaryAttack = UTIL_WeaponTimeBase()+ 0.15;
-		return;
-	}
+	#if !MLG_MODE
+		// don't fire underwater
+		if (m_pPlayer->pev->waterlevel == 3)
+		{
+			UpdateSpot( );
+			PlayEmptySound( );
+			m_flNextPrimaryAttack = UTIL_WeaponTimeBase()+ 0.15;
+			return;
+		}
+	#endif
 
 	UpdateSpot( );
 
 	float flSpread = 0.001;
 
-	m_iClip--;
+	#if !MLG_MODE
+		m_iClip--;
+	#else
+		m_iClip++;
+	#endif
 
 	m_pPlayer->pev->effects = (int)(m_pPlayer->pev->effects) | EF_MUZZLEFLASH;
 
@@ -165,7 +175,9 @@ void CEagle::PrimaryAttack()
 	if (m_fEagleLaserActive)
 	{
 		vecDir = m_pPlayer->FireBulletsPlayer( 1, vecSrc, vecAiming, Vector( flSpread, flSpread, flSpread ), 8192, BULLET_PLAYER_EAGLE, 0, 0, m_pPlayer->pev, m_pPlayer->random_seed );
-		m_flNextPrimaryAttack = UTIL_WeaponTimeBase()+ 0.5;
+			#if !MLG_MODE
+				m_flNextPrimaryAttack = UTIL_WeaponTimeBase()+ 0.5;
+			#endif
 #if !CLIENT_DLL
 		m_pEagleLaser->Suspend( 0.6 );
 #endif
@@ -174,7 +186,9 @@ void CEagle::PrimaryAttack()
 	{
 		flSpread = 0.1;
 		vecDir = m_pPlayer->FireBulletsPlayer( 1, vecSrc, vecAiming, Vector(flSpread, flSpread, flSpread), 8192, BULLET_PLAYER_EAGLE, 0, 0, m_pPlayer->pev, m_pPlayer->random_seed );
-		m_flNextPrimaryAttack = UTIL_WeaponTimeBase()+ 0.22;
+			#if !MLG_MODE
+				m_flNextPrimaryAttack = UTIL_WeaponTimeBase()+ 0.22;
+			#endif
 	}
 
 	PLAYBACK_EVENT_FULL( flags, m_pPlayer->edict(), m_usEagle, 0.0, (float *)&g_vecZero, (float *)&g_vecZero, vecDir.x, vecDir.y, 0, 0, 0, 0 );

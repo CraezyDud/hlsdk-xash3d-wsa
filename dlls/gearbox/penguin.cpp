@@ -343,7 +343,9 @@ void CPenguinGrenade::SuperBounceTouch(CBaseEntity *pOther)
 
 				// make bite sound
 				EMIT_SOUND_DYN(ENT(pev), CHAN_WEAPON, "squeek/sqk_deploy1.wav", 1.0, ATTN_NORM, 0, (int)flpitch);
-				m_flNextAttack = gpGlobals->time + 0.5;
+				#if !MLG_MODE
+					m_flNextAttack = gpGlobals->time + 0.5;
+				#endif
 			}
 		}
 		else
@@ -521,11 +523,17 @@ void CPenguin::PrimaryAttack()
 
 			m_pPlayer->m_iWeaponVolume = QUIET_GUN_VOLUME;
 
-			m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]--;
+			#if !MLG_MODE
+				m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]--;
+			#else
+				m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]++;
+			#endif
 
 			m_fJustThrown = 1;
 
-			m_flNextPrimaryAttack = GetNextAttackDelay(0.3);
+			#if !MLG_MODE
+				m_flNextPrimaryAttack = GetNextAttackDelay(0.3);
+			#endif
 			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 1.0;
 		}
 	}

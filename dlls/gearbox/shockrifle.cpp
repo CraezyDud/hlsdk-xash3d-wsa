@@ -165,7 +165,11 @@ void CShockrifle::PrimaryAttack()
 
 	m_flRechargeTime = gpGlobals->time + 1;
 #endif
-	m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]--;
+	#if !MLG_MODE
+		m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]--;
+	#else
+		m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]++;
+	#endif
 
 
 	m_pPlayer->m_iWeaponVolume = QUIET_GUN_VOLUME;
@@ -187,9 +191,13 @@ void CShockrifle::PrimaryAttack()
 #else
 	if( g_pGameRules->IsMultiplayer() )
 #endif
+	{
+	#if !MLG_MODE
 		m_flNextPrimaryAttack = GetNextAttackDelay(0.1);
 	else
 		m_flNextPrimaryAttack = GetNextAttackDelay(0.2);
+	#endif
+	}
 
 	SetThink( &CShockrifle::ClearBeams );
 	pev->nextthink = gpGlobals->time + 0.08;
@@ -203,11 +211,18 @@ void CShockrifle::SecondaryAttack(void)
 
 void CShockrifle::Reload(void)
 {
-	if (m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] >= SHOCK_MAX_CARRY)
-		return;
+	#if !MLG_MODE
+		if (m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] >= SHOCK_MAX_CARRY)
+			return;
 
-	while (m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] < SHOCK_MAX_CARRY && m_flRechargeTime < gpGlobals->time)
+		while (m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] < SHOCK_MAX_CARRY && m_flRechargeTime < gpGlobals->time)
+	#else
+		while (m_flRechargeTime < gpGlobals->time)
+	#endif
 	{
+		#if MLG_MODE
+			m_flRechargeTime += 0.0001;
+		#endif
 		EMIT_SOUND(ENT(m_pPlayer->pev), CHAN_ITEM, "weapons/shock_recharge.wav", 1, ATTN_NORM);
 
 		m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]++;

@@ -449,7 +449,9 @@ void CDisplacer::PrimaryAttack()
 	m_iFireMode = FIREMODE_FORWARD;
 
 	SetThink (&CDisplacer::SpinUp);
-	m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 1.6;
+	#if !MLG_MODE
+		m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 1.6;
+	#endif
 	pev->nextthink = gpGlobals->time;
 }
 
@@ -511,14 +513,24 @@ void CDisplacer::SpinUp( void )
 	{
 		EMIT_SOUND( edict(), CHAN_WEAPON, "weapons/displacer_spin.wav", 1, ATTN_NORM );
 		SetThink (&CDisplacer::Displace);
+		#if MLG_MODE
+			Displace();
+		#endif
+		#if !MLG_MODE
+			pev->nextthink = gpGlobals->time + 0.9;
+			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 1.3;
+		#else
+			pev->nextthink = gpGlobals->time;
+		#endif
 	}
 	else
 	{
 		EMIT_SOUND( edict(), CHAN_WEAPON, "weapons/displacer_spin2.wav", 1, ATTN_NORM );
 		SetThink (&CDisplacer::Teleport);
+		pev->nextthink = gpGlobals->time + 0.9;
+		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 1.3;
 	}
-	pev->nextthink = gpGlobals->time + 0.9;
-	m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 1.3;
+	
 }
 
 //=========================================================
@@ -535,7 +547,9 @@ void CDisplacer::Displace( void )
 	// player "shoot" animation
         m_pPlayer->SetAnimation( PLAYER_ATTACK1 );
 
-	m_pPlayer->pev->punchangle.x -= 2;
+	#if !MLG_MODE
+		m_pPlayer->pev->punchangle.x -= 2;
+	#endif
 #if !CLIENT_DLL
 	Vector vecSrc;
 	UseAmmo(DISPLACER_PRIMARY_USAGE);
@@ -675,7 +689,11 @@ void CDisplacer::ClearBeams( void )
 //=========================================================
 void CDisplacer::UseAmmo(int count)
 {
-	m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] -= count;
+	#if !MLG_MODE
+		m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] -= count;
+	#else
+		m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] += count;
+	#endif
 }
 
 //=========================================================

@@ -163,7 +163,9 @@ int CKnife::Swing(int fFirst)
 		if (fFirst)
 		{
 			// miss
-			m_flNextPrimaryAttack = GetNextAttackDelay(0.5);
+			#if !MLG_MODE
+				m_flNextPrimaryAttack = GetNextAttackDelay(0.5);
+			#endif
 
 			// player "shoot" animation
 			m_pPlayer->SetAnimation(PLAYER_ATTACK1);
@@ -200,11 +202,15 @@ int CKnife::Swing(int fFirst)
 			// If building with the clientside weapon prediction system,
 			// UTIL_WeaponTimeBase() is always 0 and m_flNextPrimaryAttack is >= -1.0f, thus making
 			// m_flNextPrimaryAttack + 1 < UTIL_WeaponTimeBase() always evaluate to false.
-#if CLIENT_WEAPONS
-			if( ( m_flNextPrimaryAttack + 1 == UTIL_WeaponTimeBase() ) || g_pGameRules->IsMultiplayer() )
-#else
-			if( ( m_flNextPrimaryAttack + 1 < UTIL_WeaponTimeBase() ) || g_pGameRules->IsMultiplayer() )
-#endif
+			#if !MLG_MODE
+				#if CLIENT_WEAPONS
+							if( ( m_flNextPrimaryAttack + 1 == UTIL_WeaponTimeBase() ) || g_pGameRules->IsMultiplayer() )
+				#else
+							if( ( m_flNextPrimaryAttack + 1 < UTIL_WeaponTimeBase() ) || g_pGameRules->IsMultiplayer() )
+				#endif
+			#else
+				if( true )
+			#endif
 			{
 				// first swing does full damage
 				pEntity->TraceAttack(m_pPlayer->pev, gSkillData.plrDmgKnife, gpGlobals->v_forward, &tr, DMG_CLUB);
@@ -271,7 +277,9 @@ int CKnife::Swing(int fFirst)
 		SetThink(&CKnife::Smack);
 		pev->nextthink = UTIL_WeaponTimeBase() + 0.2;
 #endif
+	#if !MLG_MODE
 		m_flNextPrimaryAttack = GetNextAttackDelay(0.25);
+	#endif
 	}
 	return fDidHit;
 }

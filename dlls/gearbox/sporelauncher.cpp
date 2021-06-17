@@ -122,7 +122,11 @@ void CSporelauncher::PrimaryAttack()
 	m_pPlayer->m_iWeaponVolume = LOUD_GUN_VOLUME;
 	m_pPlayer->m_iWeaponFlash = NORMAL_GUN_FLASH;
 
-	m_iClip--;
+	#if !MLG_MODE
+		m_iClip--;
+	#else
+		m_iClip++;
+	#endif
 
 	int flags;
 #if CLIENT_WEAPONS
@@ -161,11 +165,15 @@ void CSporelauncher::PrimaryAttack()
 		// HEV suit - indicate out of ammo condition
 		m_pPlayer->SetSuitUpdate("!HEV_AMO0", FALSE, 0);
 
-	m_flNextPrimaryAttack = GetNextAttackDelay(0.5);
-	m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5;
+	#if !MLG_MODE
+		m_flNextPrimaryAttack = GetNextAttackDelay(0.5);
+		m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5;
+	#endif
 
-#if 1
-	m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.5;
+#if !MLG_MODE
+	#if 1
+		m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.5;
+	#endif
 #endif
 
 	if (m_iClip != 0)
@@ -184,7 +192,11 @@ void CSporelauncher::SecondaryAttack(void)
 	m_pPlayer->m_iWeaponVolume = LOUD_GUN_VOLUME;
 	m_pPlayer->m_iWeaponFlash = NORMAL_GUN_FLASH;
 
-	m_iClip--;
+	#if !MLG_MODE
+		m_iClip--;
+	#else
+		m_iClip++;
+	#endif
 
 
 	int flags;
@@ -224,11 +236,15 @@ void CSporelauncher::SecondaryAttack(void)
 		// HEV suit - indicate out of ammo condition
 		m_pPlayer->SetSuitUpdate("!HEV_AMO0", FALSE, 0);
 
-	m_flNextPrimaryAttack = GetNextAttackDelay(0.5);
-	m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5;
+	#if !MLG_MODE
+		m_flNextPrimaryAttack = GetNextAttackDelay(0.5);
+		m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5;
+	#endif
 
-#if 1
-	m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.5;
+#if !MLG_MODE
+	#if 1
+		m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.5;
+	#endif
 #endif
 
 	if (m_iClip != 0)
@@ -243,12 +259,14 @@ void CSporelauncher::SecondaryAttack(void)
 
 void CSporelauncher::Reload(void)
 {
-	if (m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] <= 0 || m_iClip == SPORELAUNCHER_MAX_CLIP)
-		return;
+	#if !MLG_MODE
+		if (m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] <= 0 || m_iClip == SPORELAUNCHER_MAX_CLIP)
+			return;
 
-	// don't reload until recoil is done
-	if (m_flNextPrimaryAttack > UTIL_WeaponTimeBase())
-		return;
+		// don't reload until recoil is done
+		if (m_flNextPrimaryAttack > UTIL_WeaponTimeBase())
+			return;
+	#endif
 
 	// check to see if we're ready to reload
 	if (m_fInSpecialReload == 0)
@@ -257,8 +275,10 @@ void CSporelauncher::Reload(void)
 		m_fInSpecialReload = 1;
 		m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.7;
 		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.7;
-		m_flNextPrimaryAttack = GetNextAttackDelay(1.0);
-		m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 1.0;
+		#if !MLG_MODE
+			m_flNextPrimaryAttack = GetNextAttackDelay(1.0);
+			m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 1.0;
+		#endif
 		return;
 	}
 	else if (m_fInSpecialReload == 1)
@@ -273,14 +293,23 @@ void CSporelauncher::Reload(void)
 
 		SendWeaponAnim(SPLAUNCHER_RELOAD_LOAD);
 
-		m_flNextReload = UTIL_WeaponTimeBase() + 1.0;
-		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 1.0;
+		#if !MLG_MODE
+			m_flNextReload = UTIL_WeaponTimeBase() + 1.0;
+			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 1.0;
+		#else
+			m_flNextReload = UTIL_WeaponTimeBase() + 0.1;
+			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.5;
+		#endif
 	}
 	else
 	{
 		// Add them to the clip
 		m_iClip += 1;
-		m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] -= 1;
+		#if !MLG_MODE
+			m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] -= 1;
+		#else
+			m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] += 1;
+		#endif
 		m_fInSpecialReload = 1;
 	}
 }
@@ -310,7 +339,11 @@ void CSporelauncher::WeaponIdle(void)
 				SendWeaponAnim(SPLAUNCHER_RELOAD_AIM);
 
 				m_fInSpecialReload = 0;
-				m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.8;
+				#if !MLG_MODE
+					m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.8;
+				#else
+					m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.1;
+				#endif
 			}
 		}
 		else

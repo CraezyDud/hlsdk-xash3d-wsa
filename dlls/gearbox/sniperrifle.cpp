@@ -137,28 +137,37 @@ void CSniperrifle::PrimaryAttack()
 	if ( m_fInSpecialReload )
 		return;
 
+
 	if (m_iClip <= 0)
 	{
 		if (m_fFireOnEmpty)
 		{
 			PlayEmptySound();
-			m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.2;
+			#if !MLG_MODE
+				m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.2;
+			#endif
 		}
 
 		return;
 	}
 
-	// don't fire underwater
-	if (m_pPlayer->pev->waterlevel == 3)
-	{
-		PlayEmptySound( );
-		m_flNextPrimaryAttack = 0.15;
-		return;
-	}
+	#if !MLG_MODE
+		// don't fire underwater
+		if (m_pPlayer->pev->waterlevel == 3)
+		{
+			PlayEmptySound( );
+			m_flNextPrimaryAttack = 0.15;
+			return;
+		}
+	#endif
 
 	float flSpread = 0.001;
 
-	m_iClip--;
+	#if !MLG_MODE
+		m_iClip--;
+	#else
+		m_iClip++;
+	#endif
 
 	m_pPlayer->pev->effects = (int)(m_pPlayer->pev->effects) | EF_MUZZLEFLASH;
 
@@ -182,7 +191,9 @@ void CSniperrifle::PrimaryAttack()
 	Vector vecDir;
 
 	vecDir = m_pPlayer->FireBulletsPlayer( 1, vecSrc, vecAiming, Vector( flSpread, flSpread, flSpread ), 8192, BULLET_PLAYER_762, 0, 0, m_pPlayer->pev, m_pPlayer->random_seed );
-	m_flNextPrimaryAttack = 1.75;
+	#if !MLG_MODE
+		m_flNextPrimaryAttack = 1.75;
+	#endif
 	PLAYBACK_EVENT_FULL( flags, m_pPlayer->edict(), m_usSniper, 0.0, (float *)&g_vecZero, (float *)&g_vecZero, vecDir.x, vecDir.y, ( m_iClip == 0 ) ? 1 : 0, 0, 0, 0 );
 
 	if (!m_iClip && m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] <= 0)
@@ -213,7 +224,9 @@ void CSniperrifle::Reload( void )
 			iResult = DefaultReload( 5, SNIPER_RELOAD1, 80.0 / 34 );
 		#endif
 		m_fInSpecialReload = 1;
-		m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 2.25;
+		#if !MLG_MODE
+			m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 2.25;
+		#endif
 		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 2.25;
 	}
 	else
@@ -238,7 +251,9 @@ void CSniperrifle::WeaponIdle( void )
 	{
 		m_fInSpecialReload = 0;
 		SendWeaponAnim( SNIPER_RELOAD2 );
-		m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 49.0 / 27.0;
+		#if !MLG_MODE
+			m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 49.0 / 27.0;
+		#endif
 		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 49.0 / 27.0;
 	}
 	else

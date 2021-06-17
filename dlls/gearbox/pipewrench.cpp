@@ -130,11 +130,19 @@ void CPipeWrench::SecondaryAttack(void)
 	if (m_iSwingMode != 1)
 	{
 		SendWeaponAnim(PIPEWRENCH_ATTACKBIGWIND);
-		m_flBigSwingStart = gpGlobals->time;
+		#if !MLG_MODE
+			m_flBigSwingStart = gpGlobals->time;
+		#else
+			m_flBigSwingStart = gpGlobals->time-25;
+		#endif
 	}
 	m_iSwingMode = 1;
 	m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.3;
-	m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.1;
+	#if !MLG_MODE
+		m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.1;
+	#else
+		BigSwing();
+	#endif
 }
 
 void CPipeWrench::Smack()
@@ -186,8 +194,10 @@ int CPipeWrench::Swing(int fFirst)
 	{
 		// miss
 		if ( fFirst ) {
-			m_flNextPrimaryAttack = GetNextAttackDelay(0.7);
-			m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.7;
+			#if !MLG_MODE
+				m_flNextPrimaryAttack = GetNextAttackDelay(0.7);
+				m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.7;
+			#endif
 			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 5.0;
 			// player "shoot" animation
 			m_pPlayer->SetAnimation( PLAYER_ATTACK1 );
@@ -259,7 +269,9 @@ int CPipeWrench::Swing(int fFirst)
 				m_pPlayer->m_iWeaponVolume = MELEE_BODYHIT_VOLUME;
 				if ( !pEntity->IsAlive() )
 				{
-					m_flNextPrimaryAttack = GetNextAttackDelay(0.5);
+					#if !MLG_MODE
+						m_flNextPrimaryAttack = GetNextAttackDelay(0.5);
+					#endif
 					return TRUE;
 				}
 				else
@@ -304,8 +316,10 @@ int CPipeWrench::Swing(int fFirst)
 		SetThink( &CPipeWrench::Smack );
 		pev->nextthink = UTIL_WeaponTimeBase() + 0.2;
 #endif
-		m_flNextPrimaryAttack = GetNextAttackDelay(0.5);
-		m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5;
+		#if !MLG_MODE
+			m_flNextPrimaryAttack = GetNextAttackDelay(0.5);
+			m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5;
+		#endif
 	}
 	m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 5.0;
 	return fDidHit;
@@ -345,7 +359,9 @@ void CPipeWrench::BigSwing(void)
 
 	//EMIT_SOUND( ENT(m_pPlayer->pev), CHAN_WEAPON, "weapons/pwrench_big_miss.wav", 0.8, ATTN_NORM);
 
-	m_pPlayer->pev->punchangle.x -= 2;
+	#if !MLG_MODE
+		m_pPlayer->pev->punchangle.x -= 2;
+	#endif
 	if ( tr.flFraction >= 1.0 )
 	{
 		// player "shoot" animation
@@ -446,7 +462,9 @@ void CPipeWrench::WeaponIdle(void)
 	}
 	else if (m_iSwingMode == 2)
 	{
-		m_flNextSecondaryAttack = m_flNextPrimaryAttack = m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 1.1;
+		#if !MLG_MODE
+			m_flNextSecondaryAttack = m_flNextPrimaryAttack = m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 1.1;
+		#endif
 		BigSwing();
 		m_iSwingMode = 0;
 		return;

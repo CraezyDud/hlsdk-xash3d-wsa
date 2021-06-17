@@ -298,15 +298,20 @@ void CBarnacleGrapple::PrimaryAttack( void )
 		m_pPlayer->m_iWeaponVolume = 450;
 
 		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.1;
+		
 #if !CLIENT_DLL
-		if( g_pGameRules->IsMultiplayer() )
-		{
+		#if !MLG_MODE
+			if( g_pGameRules->IsMultiplayer() )
+			{
+				m_flShootTime = gpGlobals->time;
+			}
+			else
+			{
+				m_flShootTime = gpGlobals->time + 0.35;
+			}
+		#else
 			m_flShootTime = gpGlobals->time;
-		}
-		else
-		{
-			m_flShootTime = gpGlobals->time + 0.35;
-		}
+		#endif
 #endif
 		EMIT_SOUND_DYN( ENT(m_pPlayer->pev), CHAN_WEAPON, "weapons/bgrapple_fire.wav", 0.98, ATTN_NORM, 0, 125 );
 		m_fireState = CHARGE;
@@ -314,7 +319,9 @@ void CBarnacleGrapple::PrimaryAttack( void )
 
 	if( !m_pTip )
 	{
-		m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.1;
+		#if !MLG_MODE
+			m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.1;
+		#endif
 		return;
 	}
 
@@ -422,7 +429,9 @@ void CBarnacleGrapple::PrimaryAttack( void )
 	else
 	*/
 	{
-		m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.01;
+		#if !MLG_MODE
+			m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.01;
+		#endif
 	}
 }
 
@@ -465,7 +474,9 @@ void CBarnacleGrapple::EndAttack( void )
 
 	m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.9;
 
-	m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.01;
+	#if !MLG_MODE
+		m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.01;
+	#endif
 
 	DestroyEffect();
 

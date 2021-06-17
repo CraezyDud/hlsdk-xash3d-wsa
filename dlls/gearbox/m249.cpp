@@ -123,20 +123,22 @@ void CM249::Holster(int skiplocal)
 
 void CM249::PrimaryAttack()
 {
-	// don't fire underwater
-	if (m_pPlayer->pev->waterlevel == 3)
-	{
-		PlayEmptySound();
-		m_flNextPrimaryAttack = 0.15;
-		return;
-	}
+	#if !MLG_MODE
+		// don't fire underwater
+		if (m_pPlayer->pev->waterlevel == 3)
+		{
+			PlayEmptySound();
+			m_flNextPrimaryAttack = 0.15;
+			return;
+		}
 
-	if (m_iClip <= 0)
-	{
-		PlayEmptySound();
-		m_flNextPrimaryAttack = 0.15;
-		return;
-	}
+		if (m_iClip <= 0)
+		{
+			PlayEmptySound();
+			m_flNextPrimaryAttack = 0.15;
+			return;
+		}
+	#endif
 
 	m_pPlayer->pev->punchangle.x = RANDOM_FLOAT( 1.0f, 1.5f );
 	m_pPlayer->pev->punchangle.y = RANDOM_FLOAT( -0.5f, -0.2f );
@@ -144,7 +146,11 @@ void CM249::PrimaryAttack()
 	m_pPlayer->m_iWeaponVolume = NORMAL_GUN_VOLUME;
 	m_pPlayer->m_iWeaponFlash = NORMAL_GUN_FLASH;
 
-	m_iClip--;
+	#if !MLG_MODE
+		m_iClip--;
+	#else
+		m_iClip++;
+	#endif
 	UpdateTape();
 	m_pPlayer->pev->effects = (int)(m_pPlayer->pev->effects) | EF_MUZZLEFLASH;
 
@@ -198,10 +204,12 @@ void CM249::PrimaryAttack()
 		// HEV suit - indicate out of ammo condition
 		m_pPlayer->SetSuitUpdate("!HEV_AMO0", FALSE, 0);
 
-	m_flNextPrimaryAttack = GetNextAttackDelay(0.067);
+	#if !MLG_MODE
+		m_flNextPrimaryAttack = GetNextAttackDelay(0.067);
 
-	if (m_flNextPrimaryAttack < UTIL_WeaponTimeBase())
-		m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.1;
+		if (m_flNextPrimaryAttack < UTIL_WeaponTimeBase())
+			m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.1;
+	#endif
 
 	m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + UTIL_SharedRandomFloat(m_pPlayer->random_seed, 10, 15);
 }
@@ -214,7 +222,9 @@ void CM249::Reload(void)
 
 	if (DefaultReload(M249_MAX_CLIP, M249_LAUNCH, 1.33, pev->body)) {
 		m_fInSpecialReload = TRUE;
-		m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 3.78;
+		#if !MLG_MODE
+			m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 3.78;
+		#endif
 		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 3.78;
 	}
 }
@@ -228,7 +238,9 @@ void CM249::WeaponTick()
 			UpdateTape();
 			m_fInSpecialReload = FALSE;
 			SendWeaponAnim( M249_RELOAD1, UseDecrement(), pev->body );
-			m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 2.4;
+			#if !MLG_MODE
+				m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 2.4;
+			#endif
 		}
 
 		return;
