@@ -1097,7 +1097,7 @@ private:
 class CDisplacer : public CBasePlayerWeapon
 {
 public:
-#ifndef CLIENT_DLL
+#if !CLIENT_DLL
 	int Save( CSave &save );
 	int Restore( CRestore &restore );
 	static TYPEDESCRIPTION m_SaveData[];
@@ -1117,7 +1117,7 @@ public:
 
 	virtual BOOL UseDecrement( void )
 	{
-#if defined( CLIENT_WEAPONS )
+#if CLIENT_WEAPONS
 		return TRUE;
 #else
 		return FALSE;
@@ -1144,7 +1144,7 @@ private:
 class CEagle : public CBasePlayerWeapon
 {
 public:
-#ifndef CLIENT_DLL
+#if !CLIENT_DLL
 	int Save( CSave &save );
 	int Restore( CRestore &restore );
 	static TYPEDESCRIPTION m_SaveData[];
@@ -1166,7 +1166,7 @@ public:
 	int m_fEagleLaserActive;
 	virtual BOOL UseDecrement( void )
 	{
-#if defined( CLIENT_WEAPONS )
+#if CLIENT_WEAPONS
 		return TRUE;
 #else
 		return FALSE;
@@ -1184,7 +1184,7 @@ class CBarnacleGrappleTip;
 class CBarnacleGrapple : public CBasePlayerWeapon
 {
 public:
-#ifndef CLIENT_DLL
+#if !CLIENT_DLL
 	virtual int		Save( CSave &save );
 	virtual int		Restore( CRestore &restore );
 	static	TYPEDESCRIPTION m_SaveData[];
@@ -1214,7 +1214,7 @@ public:
 	void DestroyEffect( void );
 	virtual BOOL UseDecrement(void)
 	{
-#if defined( CLIENT_WEAPONS )
+#if CLIENT_WEAPONS
 		return TRUE;
 #else
 		return FALSE;
@@ -1254,7 +1254,7 @@ public:
 
 	virtual BOOL UseDecrement(void)
 	{
-#if defined( CLIENT_WEAPONS )
+#if CLIENT_WEAPONS
 		return TRUE;
 #else
 		return FALSE;
@@ -1269,7 +1269,7 @@ class CM249 : public CBasePlayerWeapon
 {
 public:
 
-#ifndef CLIENT_DLL
+#if !CLIENT_DLL
 	int		Save(CSave &save);
 	int		Restore(CRestore &restore);
 	static	TYPEDESCRIPTION m_SaveData[];
@@ -1293,7 +1293,7 @@ public:
 
 	virtual BOOL UseDecrement(void)
 	{
-#if defined( CLIENT_WEAPONS )
+#if CLIENT_WEAPONS
 		return TRUE;
 #else
 		return FALSE;
@@ -1323,7 +1323,7 @@ public:
 
 	virtual BOOL UseDecrement(void)
 	{
-#if defined( CLIENT_WEAPONS )
+#if CLIENT_WEAPONS
 		return TRUE;
 #else
 		return FALSE;
@@ -1337,7 +1337,7 @@ private:
 class CPipeWrench : public CBasePlayerWeapon
 {
 public:
-#ifndef CLIENT_DLL
+#if !CLIENT_DLL
 	int		Save(CSave &save);
 	int		Restore(CRestore &restore);
 	static	TYPEDESCRIPTION m_SaveData[];
@@ -1365,7 +1365,7 @@ public:
 
 	virtual BOOL UseDecrement(void)
 	{
-#if defined( CLIENT_WEAPONS )
+#if CLIENT_WEAPONS
 		return TRUE;
 #else
 		return FALSE;
@@ -1396,7 +1396,7 @@ public:
 	
 	virtual BOOL UseDecrement(void)
 	{
-#if defined( CLIENT_WEAPONS )
+#if CLIENT_WEAPONS
 		return TRUE;
 #else
 		return FALSE;
@@ -1412,7 +1412,7 @@ class CSniperrifle : public CBasePlayerWeapon
 {
 public:
 
-#ifndef CLIENT_DLL
+#if !CLIENT_DLL
 	int		Save(CSave &save);
 	int		Restore(CRestore &restore);
 	static	TYPEDESCRIPTION m_SaveData[];
@@ -1436,7 +1436,7 @@ public:
 
 	virtual BOOL UseDecrement(void)
 	{
-#if defined( CLIENT_WEAPONS )
+#if CLIENT_WEAPONS
 		return TRUE;
 #else
 		return FALSE;
@@ -1451,7 +1451,7 @@ class CSporelauncher : public CShotgun
 {
 public:
 
-#ifndef CLIENT_DLL
+#if !CLIENT_DLL
 	int		Save(CSave &save);
 	int		Restore(CRestore &restore);
 	static	TYPEDESCRIPTION m_SaveData[];
@@ -1471,7 +1471,7 @@ public:
 
 	virtual BOOL UseDecrement( void )
 	{
-#if defined( CLIENT_WEAPONS )
+#if CLIENT_WEAPONS
 		return TRUE;
 #else
 		return FALSE;
