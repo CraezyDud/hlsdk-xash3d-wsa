@@ -287,12 +287,12 @@ def configure(conf):
 		if conf.env.cxxshlib_PATTERN.startswith('lib'):
 			conf.env.cxxshlib_PATTERN = conf.env.cxxshlib_PATTERN[3:]
 
-	conf.define('BARNACLE_FIX_VISIBILITY', False)
+	conf.define('BARNACLE_FIX_VISIBILITY', True)
 	conf.define('CLIENT_WEAPONS', True)
-	conf.define('CROWBAR_IDLE_ANIM', False)
-	conf.define('CROWBAR_DELAY_FIX', False)
-	conf.define('CROWBAR_FIX_RAPID_CROWBAR', False)
-	conf.define('GAUSS_OVERCHARGE_FIX', False)
+	conf.define('CROWBAR_IDLE_ANIM', True)
+	conf.define('CROWBAR_DELAY_FIX', True)
+	conf.define('CROWBAR_FIX_RAPID_CROWBAR', True)
+	conf.define('GAUSS_OVERCHARGE_FIX', True)
 	conf.define('OEM_BUILD', False)
 	conf.define('HLDEMO_BUILD', False)
 
