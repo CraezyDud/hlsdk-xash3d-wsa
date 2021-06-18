@@ -58,6 +58,9 @@ def options(opt):
 	grp.add_option('--screen-damage', action = 'store_true', dest = 'SCREEN_DAMAGE', default = False,
 		help = 'show damage and heal by tinting the screen. [default: %default]')
 	
+	grp.add_option('--ignore-version-mismatch', action = 'store_true', dest = 'IGNORE_VER_MISMATCH', default = False,
+		help = 'ignore game dll version mismatch error and continue launching. [default: %default]')
+	
 	opt.load('subproject')
 
 	opt.add_subproject(['cl_dll', 'dlls'])
@@ -295,6 +298,9 @@ def configure(conf):
 	conf.define('GAUSS_OVERCHARGE_FIX', True)
 	conf.define('OEM_BUILD', False)
 	conf.define('HLDEMO_BUILD', False)
+
+	if bld.env.IGNORE_VER_MISMATCH:
+		defines += ['IGNORE_VER_MISMATCH']
 
 	conf.add_subproject(["cl_dll", "dlls"])
 
