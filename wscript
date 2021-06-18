@@ -299,9 +299,6 @@ def configure(conf):
 	conf.define('OEM_BUILD', False)
 	conf.define('HLDEMO_BUILD', False)
 
-	if bld.env.IGNORE_VER_MISMATCH:
-		defines += ['IGNORE_VER_MISMATCH']
-
 	conf.add_subproject(["cl_dll", "dlls"])
 
 def build(bld):
