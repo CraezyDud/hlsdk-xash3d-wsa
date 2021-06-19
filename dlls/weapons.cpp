@@ -991,7 +991,11 @@ BOOL CBasePlayerWeapon::DefaultDeploy( const char *szViewModel, const char *szWe
 	SendWeaponAnim( iAnim, skiplocal, body );
 
 	m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.5f;
+	#if !FIX_HANDGRENADE_THROW
 	m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 1.0f;
+	#else
+	m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 3.0f;
+	#endif
 	m_flLastFireTime = 0.0f;
 
 	return TRUE;

@@ -134,6 +134,12 @@ void CHandGrenade::PrimaryAttack()
 		#if MLG_MODE
 			ThrowGrenadeHere();
 		#endif
+
+		#if FIX_HANDGRENADE_THROW
+		if( m_flStartThrow - gpGlobals->time + 3.0f < 0.0f )
+			ThrowGrenadeHere();
+		#endif
+
 	}
 }
 
@@ -168,7 +174,9 @@ void CHandGrenade::WeaponIdle( void )
 		}
 		else
 		{
+			#if !FIX_HANDGRENADE_THROW
 			RetireWeapon();
+			#endif
 			return;
 		}
 
