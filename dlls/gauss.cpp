@@ -660,21 +660,42 @@ void CGauss::WeaponIdle( void )
 	else
 	{
 		int iAnim;
+		#if FIX_HANDGRENADE_THROW
+		float flRand = UTIL_SharedRandomFloat(m_pPlayer->random_seed, 0, 1);
+		if (flRand <= 0.75)
+		#else
 		float flRand = RANDOM_FLOAT( 0.0f, 1.0f );
 		if( flRand <= 0.5f )
+		#endif
 		{
 			iAnim = GAUSS_IDLE;
+			#if FIX_HANDGRENADE_THROW
+			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 80.0 / 15.6 * (2);
+			#else
 			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + UTIL_SharedRandomFloat( m_pPlayer->random_seed, 10.0f, 15.0f );
+			#endif
 		}
+		#if FIX_HANDGRENADE_THROW
+		else if (flRand <= 0.875)
+		#else
 		else if( flRand <= 0.75f )
+		#endif
 		{
 			iAnim = GAUSS_IDLE2;
+			#if FIX_HANDGRENADE_THROW
+			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 80.0 / 19.0;
+			#else
 			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + UTIL_SharedRandomFloat( m_pPlayer->random_seed, 10.0f, 15.0f );
+			#endif
 		}
 		else
 		{
 			iAnim = GAUSS_FIDGET;
+			#if FIX_HANDGRENADE_THROW
+			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 85.0 / 15.0;
+			#else
 			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 3.0f;
+			#endif
 		}
 #if !CLIENT_DLL
 		SendWeaponAnim( iAnim );
