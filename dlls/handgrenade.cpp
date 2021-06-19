@@ -135,9 +135,11 @@ void CHandGrenade::PrimaryAttack()
 			ThrowGrenadeHere();
 		#endif
 	}
-	#if FIX_HANDGRENADE_THROW
-	if( m_flStartThrow - gpGlobals->time + 3.0f < 0.0f )
-		ThrowGrenadeHere();
+	#if !MLG_MODE
+		#if FIX_HANDGRENADE_THROW
+		if( m_flStartThrow - gpGlobals->time + 3.0f < 0.0f )
+			ThrowGrenadeHere();
+		#endif
 	#endif
 }
 
