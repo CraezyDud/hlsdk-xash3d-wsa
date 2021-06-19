@@ -104,10 +104,12 @@ extern "C" {
 #endif
 int GetEntityAPI( DLL_FUNCTIONS *pFunctionTable, int interfaceVersion )
 {
-	if( !pFunctionTable || interfaceVersion != INTERFACE_VERSION )
-	{
-		return FALSE;
-	}
+	#if !IGNORE_VER_MISMATCH
+		if( !pFunctionTable || interfaceVersion != INTERFACE_VERSION )
+		{
+			return FALSE;
+		}
+	#endif
 	
 	memcpy( pFunctionTable, &gFunctionTable, sizeof(DLL_FUNCTIONS) );
 	return TRUE;
@@ -115,12 +117,14 @@ int GetEntityAPI( DLL_FUNCTIONS *pFunctionTable, int interfaceVersion )
 
 int GetEntityAPI2( DLL_FUNCTIONS *pFunctionTable, int *interfaceVersion )
 {
-	if( !pFunctionTable || *interfaceVersion != INTERFACE_VERSION )
-	{
-		// Tell engine what version we had, so it can figure out who is out of date.
-		*interfaceVersion = INTERFACE_VERSION;
-		return FALSE;
-	}
+	#if !IGNORE_VER_MISMATCH
+		if( !pFunctionTable || *interfaceVersion != INTERFACE_VERSION )
+		{
+			// Tell engine what version we had, so it can figure out who is out of date.
+			*interfaceVersion = INTERFACE_VERSION;
+			return FALSE;
+		}
+	#endif
 
 	memcpy( pFunctionTable, &gFunctionTable, sizeof(DLL_FUNCTIONS) );
 	return TRUE;
