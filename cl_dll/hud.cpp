@@ -37,6 +37,14 @@ extern cvar_t *sensitivity;
 cvar_t *cl_lw = NULL;
 cvar_t *cl_viewbob = NULL;
 
+cvar_t *FunSquishStuff_x;
+cvar_t *FunSquishStuff_y;
+cvar_t *FunSquishStuff_z;
+
+//cvar_t *ViewmodelOffset_x;
+//cvar_t *ViewmodelOffset_y;
+//cvar_t *ViewmodelOffset_z;
+
 cvar_t *cl_rollangle;
 cvar_t *cl_rollspeed;
 
@@ -243,6 +251,15 @@ void CHud::Init( void )
 	
 	cl_rollangle = gEngfuncs.pfnRegisterVariable("cl_rollangle", "0.65", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
 	cl_rollspeed = gEngfuncs.pfnRegisterVariable("cl_rollspeed", "300", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
+
+	FunSquishStuff_x = CVAR_CREATE( "FunSquishStuff_x", "1", FCVAR_ARCHIVE );
+	FunSquishStuff_y = CVAR_CREATE( "FunSquishStuff_y", "1", FCVAR_ARCHIVE );
+	FunSquishStuff_z = CVAR_CREATE( "FunSquishStuff_z", "1", FCVAR_ARCHIVE );
+
+
+	//ViewmodelOffset_x = CVAR_CREATE( "ViewmodelOffset_x", "0", FCVAR_ARCHIVE );
+	//ViewmodelOffset_y = CVAR_CREATE( "ViewmodelOffset_y", "0", FCVAR_ARCHIVE );
+	//ViewmodelOffset_z = CVAR_CREATE( "ViewmodelOffset_z", "0", FCVAR_ARCHIVE );
 }
 
 // CHud destructor

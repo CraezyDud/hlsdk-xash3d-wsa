@@ -293,14 +293,36 @@ BOOL CSatchel::CanDeploy( void )
 BOOL CSatchel::Deploy()
 {
 	m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 1.0f;
+	#if !FIX_HANDGRENADE_THROW
 	m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + UTIL_SharedRandomFloat( m_pPlayer->random_seed, 10.0f, 15.0f );
+	#else
+	BOOL result = FALSE;
+	#endif
 
 	if( m_chargeReady )
+	{
+		#if !FIX_HANDGRENADE_THROW
 		return DefaultDeploy( "models/v_satchel_radio.mdl", "models/p_satchel_radio.mdl", SATCHEL_RADIO_DRAW, "hive" );
+		#else
+		result = DefaultDeploy( "models/v_satchel_radio.mdl", "models/p_satchel_radio.mdl", SATCHEL_RADIO_DRAW, "hive" );
+		#endif
+	}
 	else
+	{
+		#if !FIX_HANDGRENADE_THROW
 		return DefaultDeploy( "models/v_satchel.mdl", "models/p_satchel.mdl", SATCHEL_DRAW, "trip" );
-	
+		#else
+		result = DefaultDeploy( "models/v_satchel.mdl", "models/p_satchel.mdl", SATCHEL_DRAW, "trip" );
+		#endif
+	}
+	#if !FIX_HANDGRENADE_THROW
 	return TRUE;
+	#else
+	if (result)
+		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 2.1;
+
+	return result;
+	#endif
 }
 
 void CSatchel::Holster( int skiplocal /* = 0 */ )
