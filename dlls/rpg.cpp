@@ -530,7 +530,7 @@ void CRpg::WeaponIdle( void )
 			#if !FIX_HANDGRENADE_THROW
 			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 3.0f;
 			#else
-			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 6.0;
+			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 6.1;
 			#endif
 		}
 
