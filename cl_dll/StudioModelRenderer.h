@@ -120,6 +120,16 @@ public:
 	// Draw entities bone hit boxes, etc?
 	cvar_t			*m_pCvarDrawEntities;
 
+	// - v-
+	cvar_t *FunSquishStuff_x;
+	cvar_t *FunSquishStuff_y;
+	cvar_t *FunSquishStuff_z;
+
+	// Viewmodel Offsets
+	//cvar_t *ViewmodelOffset_x;
+	//cvar_t *ViewmodelOffset_y;
+	//cvar_t *ViewmodelOffset_z;
+
 	// The entity which we are currently rendering.
 	cl_entity_t		*m_pCurrentEntity;		
 

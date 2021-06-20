@@ -465,7 +465,18 @@ BOOL CSqueak::Deploy()
 
 	m_pPlayer->m_iWeaponVolume = QUIET_GUN_VOLUME;
 
+	#if !FIX_HANDGRENADE_THROW
 	return DefaultDeploy( "models/v_squeak.mdl", "models/p_squeak.mdl", SQUEAK_UP, "squeak" );
+	#else
+	BOOL result = DefaultDeploy( "models/v_squeak.mdl", "models/p_squeak.mdl", SQUEAK_UP, "squeak" );
+
+	if (result)
+	{
+		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 1.7;
+	}
+
+	return result;
+	#endif
 }
 
 void CSqueak::Holster( int skiplocal /* = 0 */ )

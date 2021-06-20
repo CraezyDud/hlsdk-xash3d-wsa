@@ -552,6 +552,18 @@ void CStudioModelRenderer::StudioSetUpTransform( int trivial_accept )
 		}
 	}
 
+	extern cvar_t *FunSquishStuff_x;
+	extern cvar_t *FunSquishStuff_y;
+	extern cvar_t *FunSquishStuff_z;
+
+	//extern cvar_t *ViewmodelOffset_x;
+	//extern cvar_t *ViewmodelOffset_y;
+	//extern cvar_t *ViewmodelOffset_z;
+
+	(*m_protationmatrix)[0][1] *= FunSquishStuff_x->value;
+	(*m_protationmatrix)[1][1] *= FunSquishStuff_y->value;
+	(*m_protationmatrix)[2][1] *= FunSquishStuff_z->value;
+
 	(*m_protationmatrix)[0][3] = modelpos[0];
 	(*m_protationmatrix)[1][3] = modelpos[1];
 	(*m_protationmatrix)[2][3] = modelpos[2];
