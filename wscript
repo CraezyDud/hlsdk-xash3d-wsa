@@ -42,9 +42,6 @@ def options(opt):
 
 	grp.add_option('--enable-magx', action = 'store_true', dest = 'MAGX', default = False,
 		help = 'enable targetting for MotoMAGX phones [default: %default]')
-
-	grp.add_option('--enable-simple-mod-hacks', action = 'store_true', dest = 'ENABLE_MOD_HACKS', default = False,
-		help = 'enable hacks for simple mods that mostly compatible with Half-Life but has little changes. Enforced for Android. [default: %default]')
 	
 	grp.add_option('--leave-bullet-in-chamber', action = 'store_true', dest = 'LEAVE_AMMO_IN_CLIP', default = False,
 		help = 'keep ammunition in the chamber on crossbow and handgun if ammunition is above 1. (probably multiplayer incompatible with people that don\'t have this) [default: %default]')
@@ -131,8 +128,7 @@ def configure(conf):
 		conf.options.GOLDSRC = False
 		conf.env.SERVER_NAME = 'server' # can't be any other name, until specified
 	
-	conf.env.MAGX = conf.options.MAGX
-	if conf.options.MAGX:
+	if conf.env.MAGX:
 		enforce_pic = False
 
 	conf.check_pic(enforce_pic)
